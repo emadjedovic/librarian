@@ -1,0 +1,29 @@
+<div class="container" style="width: 400px">
+  <form action="/courses/create" class="form text-center" method="POST">
+    <input
+      type="text"
+      name="title"
+      id="inputTitle"
+      placeholder="Title"
+      class="form-control m-2"
+      required
+    />
+    <input
+      type="text"
+      name="description"
+      id="inputDescription"
+      placeholder="Description"
+      class="form-control m-2"
+      required
+    />
+    <input
+      type="text"
+      name="zipCode"
+      id="inputZipCode"
+      pattern="\d*"
+      placeholder="Zip Code"
+      class="form-control m-2"
+    />
+    <button type="submit" class="btn btn-dark m-2">ADD</button>
+  </form>
+</div>

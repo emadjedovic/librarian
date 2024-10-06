@@ -1,0 +1,3 @@
+course == library
+one subscriber can enroll in many libraries
+one library has many "subcribers"
