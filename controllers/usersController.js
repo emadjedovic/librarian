@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const passport = require("passport");
 
 const getUserParams = (body) => {
   return {
@@ -7,7 +8,6 @@ const getUserParams = (body) => {
       last: body.last,
     },
     email: body.email,
-    password: body.password,
     zipCode: parseInt(body.zipCode),
   };
 };
@@ -36,6 +36,27 @@ const newUser = (req, res) => {
 };
 
 // the create action
+
+const createUser = (req, res, next) => {
+  if (req.skip) next();
+  let newUser = new User(getUserParams(req.body));
+  User.register(newUser, req.body.password, (error, user) => {
+    if (user) {
+      req.flash("success", `${user.fullName}'s account created successfully!`);
+      res.locals.redirect = "/users";
+      next();
+    } else {
+      req.flash(
+        "error",
+        `Failed to create user account because: ${error.message}.`
+      );
+      res.locals.redirect = "/users/new";
+      next();
+    }
+  });
+};
+
+/*
 const createUser = (req, res, next) => {
   let userParams = getUserParams(req.body);
 
@@ -57,6 +78,7 @@ const createUser = (req, res, next) => {
       next(error);
     });
 };
+*/
 
 const redirectView = (req, res, next) => {
   let redirectPath = res.locals.redirect;
@@ -134,6 +156,27 @@ const login = (req, res) => {
   res.render("users/login");
 };
 
+// authenticate using local strategy
+const authenticate = passport.authenticate("local", {
+  failureRedirect: "/users/login",
+  failureFlash: "Failed to login.",
+  successRedirect: "/",
+  successFlash: "Logged in!",
+});
+
+const logout = (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err); // handle error during logout
+    }
+    req.flash("success", "You have been logged out!");
+    res.locals.redirect = "/";
+    next();
+  });
+};
+
+
+/*
 const authenticate = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
@@ -166,30 +209,29 @@ const authenticate = (req, res, next) => {
       next(error);
     });
 };
+*/
 
-const {body, validationResult} = require("express-validator")
+const { body, validationResult } = require("express-validator");
 
 const validate = [
   // Sanitize and validate the email
-  body('email')
+  body("email")
     .normalizeEmail({ all_lowercase: true })
     .trim()
     .isEmail()
-    .withMessage('Email is invalid'),
+    .withMessage("Email is invalid"),
 
   // Validate the zip code: not empty, must be an integer, and exactly 5 characters long
-  body('zipCode')
+  body("zipCode")
     .notEmpty()
-    .withMessage('Zip code is required')
+    .withMessage("Zip code is required")
     .isInt()
-    .withMessage('Zip code must be a number')
+    .withMessage("Zip code must be a number")
     .isLength({ min: 5, max: 5 })
-    .withMessage('Zip code must be exactly 5 digits'),
+    .withMessage("Zip code must be exactly 5 digits"),
 
   // Validate the password: cannot be empty
-  body('password')
-    .notEmpty()
-    .withMessage('Password cannot be empty'),
+  body("password").notEmpty().withMessage("Password cannot be empty"),
 
   // Handle validation results
   (req, res, next) => {
@@ -197,14 +239,13 @@ const validate = [
     if (!errors.isEmpty()) {
       // Collect all error messages
       let messages = errors.array().map((e) => e.msg);
-      req.flash('error', messages.join(' and '));
-      res.locals.redirect = '/users/new'; // Set redirect to the form page
+      req.flash("error", messages.join(" and "));
+      res.locals.redirect = "/users/new"; // Set redirect to the form page
       return res.redirect(res.locals.redirect); // Redirect back to the form with error messages
     }
     next(); // Move to the next middleware if validation passed
-  }
+  },
 ];
-
 
 module.exports = {
   getUserParams,
@@ -221,4 +262,5 @@ module.exports = {
   login,
   authenticate,
   validate,
+  logout
 };

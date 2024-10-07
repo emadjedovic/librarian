@@ -24,11 +24,30 @@
           <li class="nav-item m-2">
             <a class="nav-link btn" href="/users/new">Sign In</a>
           </li>
+          <!--
           <li class="nav-item m-2">
             <a class="nav-link btn" href="/users/login">Login</a>
           </li>
+          -->
         </ul>
+        
       </div>
+      <!-- Login/Logout div in the upper-right corner -->
+      <div class="position-absolute top-0 end-0 pt-2">
+        <% if (loggedIn) { %>
+          <a href="<%=`/users/${currentUser._id}`%>" class="text-decoration-none text-dark">
+            <p class="fw-bold mb-3">Welcome, <br><%= currentUser.fullName %></p>
+          </a>
+          <a href="/users/logout">
+            <button class="btn btn-success" style="border-radius: 1rem;">LOG OUT</button>
+          </a>
+        <% } else { %>
+          <a href="/users/login">
+            <button class="btn btn-success" style="border-radius: 1rem;">LOG IN</button>
+          </a>
+        <% } %>
+      </div>
+      
     </div>
   </nav>
   

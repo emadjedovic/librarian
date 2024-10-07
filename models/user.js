@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Subscriber = require("./subscriber");
 const bcrypt = require("bcrypt");
+const passportLocalMongoose = require("passport-local-mongoose");
 
 const userSchema = new mongoose.Schema(
   {
@@ -25,10 +26,6 @@ const userSchema = new mongoose.Schema(
       min: [1000, "Zip code too short"],
       max: 99999,
     },
-    password: {
-      type: String,
-      required: true,
-    },
     courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
     subscribedAccount: {
       type: mongoose.Schema.Types.ObjectId,
@@ -42,6 +39,12 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// automatically takes care of password storage, so no need for the password property
+// instead hash and salt fields
+userSchema.plugin(passportLocalMongoose, {
+  usernameField: "email",
+});
+
 // we want first name and last name in one line
 // add a virtual attribute
 // (computed attribute - isn't saved in the database)
@@ -51,40 +54,47 @@ userSchema.virtual("fullName").get(function () {
 
 userSchema.pre("save", function (next) {
   let user = this;
-
-  // Check if `subscribedAccount` needs to be connected
-  let subscriberPromise = Promise.resolve();
+  // a quick conditional check for existing subscriber connections
   if (user.subscribedAccount === undefined) {
-    subscriberPromise = Subscriber.findOne({ email: user.email })
+    // Query for a single subscriber
+    Subscriber.findOne({
+      email: user.email,
+    })
       .then((subscriber) => {
+        // Connect the user with a subscriber account
         user.subscribedAccount = subscriber;
+        next();
       })
       .catch((error) => {
         console.log(`Error in connecting subscriber: ${error.message}`);
         next(error);
       });
+  } else {
+    // Call next function if user already has an association
+    next();
   }
-
-  // Hash the password if it's new or modified
-  let passwordPromise = bcrypt
-    .hash(user.password, 10)
-    .then((hash) => {
-      user.password = hash;
-    })
-    .catch((error) => {
-      console.log(`Error in hashing password: ${error.message}`);
-      next(error);
-    });
-
-  // Wait for both promises to finish before calling `next()`
-  Promise.all([subscriberPromise, passwordPromise])
-    .then(() => next())
-    .catch((error) => next(error));
 });
+/*
+userSchema.pre("save", function(next) {
+  let user = this;
+  bcrypt.hash(user.password, 10).then(hash => {
+  user.password = hash;
+  next();
+  })
+  .catch(error => {
+  console.log(Error in hashing password: ${error.message});
+  next(error);
+  });
+  });
+  userSchema.methods.passwordComparison = function(inputPassword){
+  let user = this;
+  return bcrypt.compare(inputPassword, user.password);
+  };*/
 
-userSchema.methods.passwordComparison = function (inputPassword) {
+/* userSchema.methods.passwordComparison = function (inputPassword) {
   let user = this;
   return bcrypt.compare(inputPassword, user.password);
 };
+*/
 
 module.exports = mongoose.model("User", userSchema);

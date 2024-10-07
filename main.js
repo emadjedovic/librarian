@@ -2,10 +2,11 @@ const express = require("express");
 const layouts = require("express-ejs-layouts");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
-const course = require("./models/course");
+const User = require("./models/user");
 const expressSession = require("express-session");
 const cookieParser = require("cookie-parser");
 const connectFlash = require("connect-flash");
+const passport = require("passport");
 
 const coursesController = require("./controllers/coursesController");
 const errorController = require("./controllers/errorController");
@@ -28,17 +29,27 @@ const app = express();
 
 // MIDDLEWARE
 
+// Serve static files from the 'public' directory
 app.use(express.static("public"));
+
+// Layout middleware
 app.use(layouts);
+
+// Body parsing middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-//app.use(expressValidator())
+
+// Method override to handle PUT/DELETE in forms
 app.use(
   methodOverride("_method", {
     methods: ["POST", "GET"],
   })
 );
+
+// Cookie parser middleware
 app.use(cookieParser("secret_passcode"));
+
+// Session middleware
 app.use(
   expressSession({
     secret: "secret_passcode",
@@ -49,10 +60,23 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+// Initialize Passport.js
+app.use(passport.initialize());
+app.use(passport.session());
+// Passport authentication strategies
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// Flash message middleware
 app.use(connectFlash());
-// Assign flash messages to the local flashMessages variable on the response object.
+
+// Make flash messages, user authentication status, and current user available globally in views
 app.use((req, res, next) => {
   res.locals.flashMessages = req.flash();
+  res.locals.loggedIn = req.isAuthenticated();
+  res.locals.currentUser = req.user;
   next();
 });
 
@@ -104,7 +128,8 @@ app.post(
 );
 
 app.get("/users/login", usersController.login);
-app.post("/users/login", usersController.authenticate, usersController.redirectView);
+app.post("/users/login", usersController.authenticate);
+app.get("/users/logout", usersController.logout, usersController.redirectView)
 
 app.get("/users/:id", usersController.showUser, usersController.showView);
 app.get("/users/:id/edit", usersController.showEdit);

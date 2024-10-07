@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Subscriber = require("./models/subscriber");
 const Course = require("./models/course");
 const User = require("./models/user"); // Include the User model
+const passport = require("passport");
 
 const dbURL = "mongodb://localhost:27017/capricciosity";
 
@@ -57,30 +58,32 @@ mongoose
 
     // Insert users and link to subscribers
     const userPromises = users.map((userData) => {
-      let testUser;
+      const testUser = new User(userData);
 
-      return User.create(userData)
-        .then((user) => {
-          testUser = user;
+      // Using passport's register method to handle hashing and saving
+      return User.register(testUser, userData.password).then((user) => {
+        console.log(`User registered: ${user.fullName}`);
 
-          // Find corresponding subscriber by email
-          return Subscriber.findOne({ email: user.email });
-        })
-        .then((subscriber) => {
-          if (!subscriber) {
-            throw new Error(`Subscriber not found for email: ${testUser.email}`);
-          }
+        // Find corresponding subscriber by email
+        return Subscriber.findOne({ email: user.email })
+          .then((subscriber) => {
+            if (!subscriber) {
+              throw new Error(`Subscriber not found for email: ${user.email}`);
+            }
 
-          // Link subscriber to user
-          testUser.subscribedAccount = subscriber._id;
+            // Link subscriber to user
+            user.subscribedAccount = subscriber._id;
 
-          // Save updated user
-          return testUser.save();
-        })
-        .then((updatedUser) => {
-          console.log(`User updated and linked to subscriber: ${updatedUser.fullName}`);
-          return updatedUser;
-        });
+            // Save updated user with subscriber reference
+            return user.save();
+          })
+          .then((updatedUser) => {
+            console.log(
+              `User updated and linked to subscriber: ${updatedUser.fullName}`
+            );
+            return updatedUser;
+          });
+      });
     });
 
     return Promise.all(userPromises);

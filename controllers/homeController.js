@@ -1,7 +1,8 @@
 const showHome = (req, res) => {
-  res.render('index', { name: 'Ema'})
-}
+  const userName = res.locals.currentUser ? res.locals.currentUser.name.first : 'Guest';
+  res.render('index', { name: userName });
+};
 
 module.exports = {
   showHome
-}
+};
