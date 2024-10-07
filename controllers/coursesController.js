@@ -25,8 +25,12 @@ const index = (req, res, next) => {
 
 // seperate action for rendering the view
 const indexView = (req, res) => {
+  if (req.query.format === "json") {
+  res.json(res.locals.courses);
+  } else {
   res.render("courses/index");
-};
+  }
+  }
 
 // the new action
 const newCourse = (req, res) => {
@@ -76,8 +80,12 @@ const showCourse = (req, res, next) => {
 };
 
 const showView = (req, res) => {
+  if (req.query.format === "json") {
+    res.json(res.locals.course);
+    } else {
   res.render("courses/show");
 };
+}
 
 const showEdit = (req, res, next) => {
   let courseId = req.params.id;

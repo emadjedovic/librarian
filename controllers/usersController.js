@@ -25,9 +25,12 @@ const index = (req, res, next) => {
     });
 };
 
-// seperate action for rendering the view
 const indexView = (req, res) => {
-  res.render("users/index");
+  if (req.query.format === "json") {
+    res.json(res.locals.users);
+  } else {
+    res.render("users/index");
+  }
 };
 
 // the new action
@@ -56,30 +59,6 @@ const createUser = (req, res, next) => {
   });
 };
 
-/*
-const createUser = (req, res, next) => {
-  let userParams = getUserParams(req.body);
-
-  User.create(userParams)
-    .then((user) => {
-      // success flash message
-      req.flash("success", `${user.fullName}'s account created successfully!`);
-      res.locals.redirect = "/users";
-      res.locals.user = user;
-      next();
-    })
-    .catch((error) => {
-      console.log(`Error saving user: ${error.message}`);
-      res.locals.redirect = "/users/new";
-      req.flash(
-        "error",
-        `Failed to create user account because: ${error.message}.`
-      );
-      next(error);
-    });
-};
-*/
-
 const redirectView = (req, res, next) => {
   let redirectPath = res.locals.redirect;
   if (redirectPath) res.redirect(redirectPath);
@@ -100,7 +79,11 @@ const showUser = (req, res, next) => {
 };
 
 const showView = (req, res) => {
-  res.render("users/show");
+  if (req.query.format === "json") {
+    res.json(res.locals.user);
+  } else {
+    res.render("users/show");
+  }
 };
 
 const showEdit = (req, res, next) => {
@@ -175,42 +158,6 @@ const logout = (req, res, next) => {
   });
 };
 
-
-/*
-const authenticate = (req, res, next) => {
-  User.findOne({ email: req.body.email })
-    .then((user) => {
-      if (user) {
-        user.passwordComparison(req.body.password).then((passwordsMatch) => {
-          if (passwordsMatch) {
-            res.locals.redirect = `/users/${user._id}`;
-            req.flash("success", `${user.fullName}'s logged in successfully!`);
-            res.locals.user = user;
-          } else {
-            req.flash(
-              "error",
-              "Failed to log in user account: Incorrect Password."
-            );
-            res.locals.redirect = "/users/login";
-          }
-          next();
-        });
-      } else {
-        req.flash(
-          "error",
-          "Failed to log in user account: User account not found."
-        );
-        res.locals.redirect = "/users/login";
-        next();
-      }
-    })
-    .catch((error) => {
-      console.log(`Error logging in user: ${error.message}`);
-      next(error);
-    });
-};
-*/
-
 const { body, validationResult } = require("express-validator");
 
 const validate = [
@@ -262,5 +209,5 @@ module.exports = {
   login,
   authenticate,
   validate,
-  logout
+  logout,
 };

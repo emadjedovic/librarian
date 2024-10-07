@@ -2,11 +2,11 @@ const Subscriber = require("../models/subscriber");
 
 const getSubscriberParams = (body) => {
   return {
-  name: body.name,
-  email: body.email,
-  zipCode: parseInt(body.zipCode)
+    name: body.name,
+    email: body.email,
+    zipCode: parseInt(body.zipCode),
   };
-  };
+};
 
 const index = (req, res, next) => {
   Subscriber.find({})
@@ -21,7 +21,11 @@ const index = (req, res, next) => {
 };
 
 const indexView = (req, res) => {
-  res.render("subscribers/index")
+  if (req.query.format === "json") {
+    res.json(res.locals.subscribers);
+  } else {
+    res.render("subscribers/index");
+  }
 };
 
 const newSubscriber = (req, res) => {
@@ -39,10 +43,7 @@ const createSubscriber = (req, res, next) => {
     })
     .catch((error) => {
       console.log(`Error saving subscriber: ${error.message}`);
-      req.flash(
-        "error",
-        `Failed to subscribe because: ${error.message}.`
-      );
+      req.flash("error", `Failed to subscribe because: ${error.message}.`);
       next(error);
     });
 };
@@ -67,7 +68,11 @@ const showSubscriber = (req, res, next) => {
 };
 
 const showView = (req, res) => {
-  res.render("subscribers/show");
+  if (req.query.format === "json") {
+    res.json(res.locals.subscriber);
+  } else {
+    res.render("subscribers/show");
+  }
 };
 
 const showEdit = (req, res, next) => {
@@ -84,8 +89,8 @@ const showEdit = (req, res, next) => {
     });
 };
 const updateSubscriber = (req, res, next) => {
-  let subscriberId = req.params.id
-  subscriberParams = getSubscriberParams(req.body)
+  let subscriberId = req.params.id;
+  subscriberParams = getSubscriberParams(req.body);
   Subscriber.findByIdAndUpdate(subscriberId, {
     $set: subscriberParams,
   })
@@ -117,10 +122,7 @@ const deleteSubscriber = (req, res, next) => {
     })
     .catch((error) => {
       console.log(`Error deleting subscriber by ID: ${error.message}`);
-      req.flash(
-        "error",
-        `Failed to unsubscribe because: ${error.message}.`
-      );
+      req.flash("error", `Failed to unsubscribe because: ${error.message}.`);
       next();
     });
 };
