@@ -17,15 +17,16 @@
 <p>This subscriber has <%= subscriber.courses.length %> associated course(s).</p>
 
 <div>
-    <a href="/subscribers">View all subscribers</a>
+    <a href="/subscribers" class="btn btn-dark mt-1">View all subscribers</a>
   </div>
   <div>
-    <a href="<%=`/subscribers/${subscriber._id}/edit`%>"> Edit Subscriber Details </a>
+    <a href="<%=`/subscribers/${subscriber._id}/edit`%>" class="btn btn-dark mt-1"> Edit Subscriber Details </a>
   </div>
   <div>
     <a
       href="<%= `/subscribers/${subscriber._id}/delete?_method=DELETE` %>"
       onclick="return confirm('Are you sure you want to delete this subscriber?')"
+      class="btn btn-dark mt-1"
       >Delete</a
     >
   </div>

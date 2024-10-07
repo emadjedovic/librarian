@@ -10,9 +10,8 @@
     <title>Capricciosity</title>
     <style>
       body {
-        padding: 5%;
-        padding-top: 0;
-        padding-bottom: 0;
+        margin: auto;
+        width: fit-content;
         background-color: antiquewhite;
       }
       .content-wrapper {
@@ -55,7 +54,7 @@
         <div class="flash error"><%= flashMessages.error %></div>
         <% } %> <% } %>
       </div>
-      
+
       <div class="content"><%- body %></div>
       <%- include('partials/footer') %>
     </div>

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Subscriber = require("./subscriber");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
   {
@@ -29,7 +30,11 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
-    subscribedAccount: { type: mongoose.Schema.Types.ObjectId, ref: "Subscriber" }},
+    subscribedAccount: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Subscriber",
+    },
+  },
 
   // a timestamps property to record createdAt and updatedAt dates
   {
@@ -46,25 +51,40 @@ userSchema.virtual("fullName").get(function () {
 
 userSchema.pre("save", function (next) {
   let user = this;
-  // a quick conditional check for existing subscriber connections
+
+  // Check if `subscribedAccount` needs to be connected
+  let subscriberPromise = Promise.resolve();
   if (user.subscribedAccount === undefined) {
-    // Query for a single subscriber
-    Subscriber.findOne({
-      email: user.email,
-    })
+    subscriberPromise = Subscriber.findOne({ email: user.email })
       .then((subscriber) => {
-        // Connect the user with a subscriber account
         user.subscribedAccount = subscriber;
-        next();
       })
       .catch((error) => {
         console.log(`Error in connecting subscriber: ${error.message}`);
         next(error);
       });
-  } else {
-    // Call next function if user already has an association
-    next();
   }
+
+  // Hash the password if it's new or modified
+  let passwordPromise = bcrypt
+    .hash(user.password, 10)
+    .then((hash) => {
+      user.password = hash;
+    })
+    .catch((error) => {
+      console.log(`Error in hashing password: ${error.message}`);
+      next(error);
+    });
+
+  // Wait for both promises to finish before calling `next()`
+  Promise.all([subscriberPromise, passwordPromise])
+    .then(() => next())
+    .catch((error) => next(error));
 });
+
+userSchema.methods.passwordComparison = function (inputPassword) {
+  let user = this;
+  return bcrypt.compare(inputPassword, user.password);
+};
 
 module.exports = mongoose.model("User", userSchema);

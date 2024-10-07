@@ -27,7 +27,7 @@ const index = (req, res, next) => {
 
 // seperate action for rendering the view
 const indexView = (req, res) => {
-  res.render("users/index")
+  res.render("users/index");
 };
 
 // the new action
@@ -109,10 +109,7 @@ const updateUser = (req, res, next) => {
     })
     .catch((error) => {
       console.log(`Error updating user by ID: ${error.message}`);
-      req.flash(
-        "error",
-        `Failed to update user because: ${error.message}.`
-      );
+      req.flash("error", `Failed to update user because: ${error.message}.`);
       next(error);
     });
 };
@@ -128,13 +125,86 @@ const deleteUser = (req, res, next) => {
     })
     .catch((error) => {
       console.log(`Error deleting user by ID: ${error.message}`);
-      req.flash(
-        "error",
-        `Failed to delete user because: ${error.message}.`
-      );
+      req.flash("error", `Failed to delete user because: ${error.message}.`);
       next();
     });
 };
+
+const login = (req, res) => {
+  res.render("users/login");
+};
+
+const authenticate = (req, res, next) => {
+  User.findOne({ email: req.body.email })
+    .then((user) => {
+      if (user) {
+        user.passwordComparison(req.body.password).then((passwordsMatch) => {
+          if (passwordsMatch) {
+            res.locals.redirect = `/users/${user._id}`;
+            req.flash("success", `${user.fullName}'s logged in successfully!`);
+            res.locals.user = user;
+          } else {
+            req.flash(
+              "error",
+              "Failed to log in user account: Incorrect Password."
+            );
+            res.locals.redirect = "/users/login";
+          }
+          next();
+        });
+      } else {
+        req.flash(
+          "error",
+          "Failed to log in user account: User account not found."
+        );
+        res.locals.redirect = "/users/login";
+        next();
+      }
+    })
+    .catch((error) => {
+      console.log(`Error logging in user: ${error.message}`);
+      next(error);
+    });
+};
+
+const {body, validationResult} = require("express-validator")
+
+const validate = [
+  // Sanitize and validate the email
+  body('email')
+    .normalizeEmail({ all_lowercase: true })
+    .trim()
+    .isEmail()
+    .withMessage('Email is invalid'),
+
+  // Validate the zip code: not empty, must be an integer, and exactly 5 characters long
+  body('zipCode')
+    .notEmpty()
+    .withMessage('Zip code is required')
+    .isInt()
+    .withMessage('Zip code must be a number')
+    .isLength({ min: 5, max: 5 })
+    .withMessage('Zip code must be exactly 5 digits'),
+
+  // Validate the password: cannot be empty
+  body('password')
+    .notEmpty()
+    .withMessage('Password cannot be empty'),
+
+  // Handle validation results
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // Collect all error messages
+      let messages = errors.array().map((e) => e.msg);
+      req.flash('error', messages.join(' and '));
+      res.locals.redirect = '/users/new'; // Set redirect to the form page
+      return res.redirect(res.locals.redirect); // Redirect back to the form with error messages
+    }
+    next(); // Move to the next middleware if validation passed
+  }
+];
+
 
 module.exports = {
   getUserParams,
@@ -148,4 +218,7 @@ module.exports = {
   showEdit,
   updateUser,
   deleteUser,
+  login,
+  authenticate,
+  validate,
 };

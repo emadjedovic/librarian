@@ -32,6 +32,7 @@ app.use(express.static("public"));
 app.use(layouts);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+//app.use(expressValidator())
 app.use(
   methodOverride("_method", {
     methods: ["POST", "GET"],
@@ -95,11 +96,16 @@ app.delete(
 // to the res object, indexView is called to render the view.
 app.get("/users", usersController.index, usersController.indexView);
 app.get("/users/new", usersController.newUser);
+// determine whether data meets the requirements to continue to the create action
 app.post(
-  "/users/create",
+  "/users/create", usersController.validate,
   usersController.createUser,
   usersController.redirectView
 );
+
+app.get("/users/login", usersController.login);
+app.post("/users/login", usersController.authenticate, usersController.redirectView);
+
 app.get("/users/:id", usersController.showUser, usersController.showView);
 app.get("/users/:id/edit", usersController.showEdit);
 // Process data from the edit form, and display the user show page.
