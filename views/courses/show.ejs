@@ -9,26 +9,30 @@
     <td><%= course.description %></td>
   </tr>
   <tr>
-    <th>Zip Code</th>
-    <td><%= course.zipCode %></td>
+    <th>Max Students</th>
+    <td><%= course.maxStudents %></td>
+  </tr>
+  <tr>
+    <th>Cost</th>
+    <td><%= course.cost %></td>
   </tr>
 </table>
 
-<% if (course.items) { %>
-<h3>ITEMS</h3>
-<% course.items.forEach((item) => { %> <%= item %> | <% }) %> <% } %>
+<% // if (course.items) { %>
+<% /*course.items.forEach((item) => { %> <%= item %> | <% }) %> <% } */%>
 
 <div class="container mt-3">
   <div>
-    <a href="/courses">View all courses</a>
+    <a href="/courses" class="btn btn-dark mt-1">View all courses</a>
   </div>
   <div>
-    <a href="<%=`/courses/${course._id}/edit`%>"> Edit Course Details </a>
+    <a href="<%=`/courses/${course._id}/edit`%>" class="btn btn-dark mt-1"> Edit Course Details </a>
   </div>
   <div>
     <a
       href="<%= `/courses/${course._id}/delete?_method=DELETE` %>"
       onclick="return confirm('Are you sure you want to delete this course?')"
+      class="btn btn-dark mt-1"
       >Delete</a
     >
   </div>

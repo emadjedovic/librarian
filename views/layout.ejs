@@ -23,11 +23,39 @@
       .content {
         flex-grow: 1;
       }
+      .flashes {
+        margin: 20px 0;
+      }
+      .flash {
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      .flash.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .flash.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
     </style>
   </head>
   <body>
     <div class="content-wrapper">
       <%- include('partials/navigation') %>
+
+      <div class="flashes">
+        <% if (flashMessages) { %> <% if (flashMessages.success) { %>
+        <div class="flash success"><%= flashMessages.success %></div>
+        <% } else if (flashMessages.error) { %>
+        <div class="flash error"><%= flashMessages.error %></div>
+        <% } %> <% } %>
+      </div>
+      
       <div class="content"><%- body %></div>
       <%- include('partials/footer') %>
     </div>

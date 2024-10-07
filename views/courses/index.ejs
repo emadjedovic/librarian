@@ -4,7 +4,8 @@
     <tr>
       <th>Title</th>
       <th>Description</th>
-      <th>Zip Code</th>
+      <th>Max Students</th>
+      <th>Cost</th>
       <th>Edit</th>
       <th>Delete</th>
     </tr>
@@ -14,7 +15,8 @@
     <tr>
       <td><a href="<%= `/courses/${course._id}` %>"><%= course.title %></a></td>
       <td><%= course.description %></td>
-      <td><%= course.zipCode %></td>
+      <td><%= course.maxStudents %></td>
+      <td><%= course.cost %></td>
       <!--edit link tag-->
       <td>
         <a href="<%=`/courses/${course._id}/edit` %>"> Edit </a>

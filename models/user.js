@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
 const Subscriber = require("./subscriber");
 
-const userSchema = new Schema(
+const userSchema = new mongoose.Schema(
   {
     name: {
       first: {
@@ -29,9 +28,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    courses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
-    subscribedAccount: { type: Schema.Types.ObjectId, ref: "Subscriber" },
-  },
+    courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+    subscribedAccount: { type: mongoose.Schema.Types.ObjectId, ref: "Subscriber" }},
+
   // a timestamps property to record createdAt and updatedAt dates
   {
     timestamps: true,

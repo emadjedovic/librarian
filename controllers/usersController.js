@@ -1,5 +1,17 @@
 const User = require("../models/user");
 
+const getUserParams = (body) => {
+  return {
+    name: {
+      first: body.first,
+      last: body.last,
+    },
+    email: body.email,
+    password: body.password,
+    zipCode: parseInt(body.zipCode),
+  };
+};
+
 // store the user data on the response and call the next middleware function
 const index = (req, res, next) => {
   User.find()
@@ -15,7 +27,7 @@ const index = (req, res, next) => {
 
 // seperate action for rendering the view
 const indexView = (req, res) => {
-  res.render("users/index");
+  res.render("users/index")
 };
 
 // the new action
@@ -25,24 +37,23 @@ const newUser = (req, res) => {
 
 // the create action
 const createUser = (req, res, next) => {
-  let userParams = {
-    name: {
-      first: req.body.first,
-      last: req.body.last,
-    },
-    email: req.body.email,
-    password: req.body.password,
-    zipCode: req.body.zipCode,
-  };
+  let userParams = getUserParams(req.body);
 
   User.create(userParams)
     .then((user) => {
+      // success flash message
+      req.flash("success", `${user.fullName}'s account created successfully!`);
       res.locals.redirect = "/users";
       res.locals.user = user;
       next();
     })
     .catch((error) => {
       console.log(`Error saving user: ${error.message}`);
+      res.locals.redirect = "/users/new";
+      req.flash(
+        "error",
+        `Failed to create user account because: ${error.message}.`
+      );
       next(error);
     });
 };
@@ -84,26 +95,24 @@ const showEdit = (req, res, next) => {
     });
 };
 const updateUser = (req, res, next) => {
-  let userId = req.params.id,
-    userParams = {
-      name: {
-        first: req.body.first,
-        last: req.body.last,
-      },
-      email: req.body.email,
-      password: req.body.password,
-      zipCode: req.body.zipCode,
-    };
+  let userId = req.params.id;
+  const userParams = getUserParams(req.body);
   User.findByIdAndUpdate(userId, {
     $set: userParams,
   })
     .then((user) => {
       res.locals.redirect = `/users/${userId}`; // call redirectView afterwards
       res.locals.user = user;
+      // success flash message
+      req.flash("success", `${user.fullName} updated successfully!`);
       next();
     })
     .catch((error) => {
       console.log(`Error updating user by ID: ${error.message}`);
+      req.flash(
+        "error",
+        `Failed to update user because: ${error.message}.`
+      );
       next(error);
     });
 };
@@ -113,15 +122,22 @@ const deleteUser = (req, res, next) => {
   User.findByIdAndDelete(userId)
     .then(() => {
       res.locals.redirect = "/users";
+      // success flash message
+      req.flash("success", `User deleted successfully!`);
       next();
     })
     .catch((error) => {
       console.log(`Error deleting user by ID: ${error.message}`);
+      req.flash(
+        "error",
+        `Failed to delete user because: ${error.message}.`
+      );
       next();
     });
 };
 
 module.exports = {
+  getUserParams,
   index,
   indexView,
   newUser,

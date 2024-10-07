@@ -1,5 +1,13 @@
 const Subscriber = require("../models/subscriber");
 
+const getSubscriberParams = (body) => {
+  return {
+  name: body.name,
+  email: body.email,
+  zipCode: parseInt(body.zipCode)
+  };
+  };
+
 const index = (req, res, next) => {
   Subscriber.find({})
     .then((subscribers) => {
@@ -13,7 +21,7 @@ const index = (req, res, next) => {
 };
 
 const indexView = (req, res) => {
-  res.render("subscribers/index");
+  res.render("subscribers/index")
 };
 
 const newSubscriber = (req, res) => {
@@ -21,11 +29,7 @@ const newSubscriber = (req, res) => {
 };
 
 const createSubscriber = (req, res, next) => {
-  let subscriberParams = {
-    name: req.body.name,
-    email: req.body.email,
-    zipCode: req.body.zipCode,
-  };
+  let subscriberParams = getSubscriberParams(req.body);
 
   Subscriber.create(subscriberParams)
     .then((subscriber) => {
@@ -35,6 +39,10 @@ const createSubscriber = (req, res, next) => {
     })
     .catch((error) => {
       console.log(`Error saving subscriber: ${error.message}`);
+      req.flash(
+        "error",
+        `Failed to subscribe because: ${error.message}.`
+      );
       next(error);
     });
 };
@@ -76,22 +84,24 @@ const showEdit = (req, res, next) => {
     });
 };
 const updateSubscriber = (req, res, next) => {
-  let subscriberId = req.params.id,
-    subscriberParams = {
-      name: req.body.name,
-      email: req.body.email,
-      zipCode: req.body.zipCode,
-    };
+  let subscriberId = req.params.id
+  subscriberParams = getSubscriberParams(req.body)
   Subscriber.findByIdAndUpdate(subscriberId, {
     $set: subscriberParams,
   })
     .then((subscriber) => {
       res.locals.redirect = `/subscribers/${subscriberId}`; // call redirectView afterwards
       res.locals.subscriber = subscriber;
+      // success flash message
+      req.flash("success", `${subscriber.name} updated successfully!`);
       next();
     })
     .catch((error) => {
       console.log(`Error updating subscriber by ID: ${error.message}`);
+      req.flash(
+        "error",
+        `Failed to update subscriber because: ${error.message}.`
+      );
       next(error);
     });
 };
@@ -101,15 +111,22 @@ const deleteSubscriber = (req, res, next) => {
   Subscriber.findByIdAndDelete(subscriberId)
     .then(() => {
       res.locals.redirect = "/subscribers";
+      // success flash message
+      req.flash("success", `Unsubscribed successfully!`);
       next();
     })
     .catch((error) => {
       console.log(`Error deleting subscriber by ID: ${error.message}`);
+      req.flash(
+        "error",
+        `Failed to unsubscribe because: ${error.message}.`
+      );
       next();
     });
 };
 
 module.exports = {
+  getSubscriberParams,
   index,
   indexView,
   newSubscriber,

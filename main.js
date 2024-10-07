@@ -1,6 +1,11 @@
 const express = require("express");
 const layouts = require("express-ejs-layouts");
 const mongoose = require("mongoose");
+const methodOverride = require("method-override");
+const course = require("./models/course");
+const expressSession = require("express-session");
+const cookieParser = require("cookie-parser");
+const connectFlash = require("connect-flash");
 
 const coursesController = require("./controllers/coursesController");
 const errorController = require("./controllers/errorController");
@@ -21,21 +26,37 @@ mongoose
 
 const app = express();
 
-const methodOverride = require("method-override");
-const course = require("./models/course");
-app.use(
-  methodOverride("_method", {
-    methods: ["POST", "GET"],
-  })
-);
-
-app.set("port", process.env.PORT || 3000);
-app.set("view engine", "ejs");
+// MIDDLEWARE
 
 app.use(express.static("public"));
 app.use(layouts);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(
+  methodOverride("_method", {
+    methods: ["POST", "GET"],
+  })
+);
+app.use(cookieParser("secret_passcode"));
+app.use(
+  expressSession({
+    secret: "secret_passcode",
+    cookie: {
+      maxAge: 4000000,
+    },
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(connectFlash());
+// Assign flash messages to the local flashMessages variable on the response object.
+app.use((req, res, next) => {
+  res.locals.flashMessages = req.flash();
+  next();
+});
+
+app.set("port", process.env.PORT || 3000);
+app.set("view engine", "ejs");
 
 app.get("/", homeController.showHome);
 app.get("/thanks", (req, res) => {
@@ -43,6 +64,7 @@ app.get("/thanks", (req, res) => {
 });
 
 // COURSES
+
 app.get("/courses", coursesController.index, coursesController.indexView);
 app.get("/courses/new", coursesController.newCourse);
 app.post(
@@ -68,6 +90,7 @@ app.delete(
 );
 
 // USERS
+
 // When usersController.index completes your query and adds your data
 // to the res object, indexView is called to render the view.
 app.get("/users", usersController.index, usersController.indexView);
@@ -92,6 +115,7 @@ app.delete(
 );
 
 // SUBSCRIBERS
+
 app.get(
   "/subscribers",
   subscribersController.index,
@@ -120,6 +144,8 @@ app.delete(
   subscribersController.deleteSubscriber,
   subscribersController.redirectView
 );
+
+// ERROR HANDLING
 
 app.use(errorController.internalServerError);
 app.use(errorController.pageNotFoundError);

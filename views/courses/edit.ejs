@@ -19,14 +19,21 @@
         placeholder="Description"
         required
       />
+      <label for="inputMaxStudents" class="form-label">Maximum Students</label>
       <input
         type="text"
         class="form-control m-2"
-        name="zipCode"
-        id="inputZipCode"
-        pattern="\d*"
-        value="<%= course.zipCode %>"
-        placeholder="Zip Code"
+        name="maxStudents"
+        id="inputMaxStudents"
+        value="<%= course.maxStudents %>"
+      />
+      <label for="inputCost" class="form-label">Cost</label>
+      <input
+        type="text"
+        class="form-control m-2"
+        name="cost"
+        id="inputCost"
+        value="<%= course.cost %>"
       />
       <button type="submit" class="btn btn-dark m-2">UPDATE</button>
     </form>
