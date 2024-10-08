@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const passport = require("passport");
+const StatusCodes = require("http-status-codes").StatusCodes;
 
 const getUserParams = (body) => {
   return {
@@ -194,6 +195,30 @@ const validate = [
   },
 ];
 
+const respondJSON = (req, res) => {
+  // handle the request from previous middleware
+  res.json({
+    status: StatusCodes.OK,
+    data: res.locals,
+  });
+};
+
+const errorJSON = (error, req, res, next) => {
+  let errorObject;
+  if (error) {
+    errorObject = {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error.message,
+    };
+  } else {
+    errorObject = {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: "Unknown Error.",
+    };
+  }
+  res.json(errorObject);
+};
+
 module.exports = {
   getUserParams,
   index,
@@ -210,4 +235,6 @@ module.exports = {
   authenticate,
   validate,
   logout,
+  respondJSON,
+  errorJSON
 };

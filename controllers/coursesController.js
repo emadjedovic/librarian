@@ -1,14 +1,16 @@
 const Course = require("../models/course");
+const User = require("../models/user");
+const StatusCodes = require("http-status-codes").StatusCodes;
 
 const getCourseParams = (body) => {
   return {
     title: body.title,
     description: body.description,
     maxStudents: parseInt(body.maxStudents),
-    cost: parseInt(body.cost)
+    cost: parseInt(body.cost),
     //zipCode: body.zipCode
   };
-}
+};
 
 // store the user data on the response and call the next middleware function
 const index = (req, res, next) => {
@@ -26,11 +28,11 @@ const index = (req, res, next) => {
 // seperate action for rendering the view
 const indexView = (req, res) => {
   if (req.query.format === "json") {
-  res.json(res.locals.courses);
+    res.json(res.locals.courses);
   } else {
-  res.render("courses/index");
+    res.render("courses/index");
   }
-  }
+};
 
 // the new action
 const newCourse = (req, res) => {
@@ -50,11 +52,7 @@ const createCourse = (req, res, next) => {
       next();
     })
     .catch((error) => {
-      
-      req.flash(
-        "error",
-        `Failed to create course because: ${error.message}.`
-      );
+      req.flash("error", `Failed to create course because: ${error.message}.`);
       console.log(`Error saving course: ${error.message}`);
       next(error);
     });
@@ -82,10 +80,10 @@ const showCourse = (req, res, next) => {
 const showView = (req, res) => {
   if (req.query.format === "json") {
     res.json(res.locals.course);
-    } else {
-  res.render("courses/show");
+  } else {
+    res.render("courses/show");
+  }
 };
-}
 
 const showEdit = (req, res, next) => {
   let courseId = req.params.id;
@@ -102,8 +100,8 @@ const showEdit = (req, res, next) => {
 };
 
 const updateCourse = (req, res, next) => {
-  let courseId = req.params.id
-  const courseParams = getCourseParams(req.body)
+  let courseId = req.params.id;
+  const courseParams = getCourseParams(req.body);
   Course.findByIdAndUpdate(courseId, {
     $set: courseParams,
   })
@@ -116,10 +114,7 @@ const updateCourse = (req, res, next) => {
     })
     .catch((error) => {
       console.log(`Error updating course by ID: ${error.message}`);
-      req.flash(
-        "error",
-        `Failed to update course because: ${error.message}.`
-      );
+      req.flash("error", `Failed to update course because: ${error.message}.`);
       next(error);
     });
 };
@@ -135,12 +130,74 @@ const deleteCourse = (req, res, next) => {
     })
     .catch((error) => {
       console.log(`Error deleting course by ID: ${error.message}`);
-      req.flash(
-        "error",
-        `Failed to delete course because: ${error.message}.`
-      );
+      req.flash("error", `Failed to delete course because: ${error.message}.`);
       next();
     });
+};
+
+const respondJSON = (req, res) => {
+  // handle the request from previous middleware
+  res.json({
+    status: StatusCodes.OK,
+    data: res.locals,
+  });
+};
+
+const errorJSON = (error, req, res, next) => {
+  let errorObject;
+  if (error) {
+    errorObject = {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error.message,
+    };
+  } else {
+    errorObject = {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: "Unknown Error.",
+    };
+  }
+  res.json(errorObject);
+};
+
+const joinCourse = (req, res, next) => {
+  let courseId = req.params.id;
+  const currentUser = req.user;
+  // check whether a user is logged in
+  if (currentUser) {
+    User.findByIdAndUpdate(currentUser, {
+      $addToSet: {
+        courses: courseId,
+      },
+    })
+      .then(() => {
+        res.locals.success = true;
+        next();
+      })
+      .catch((error) => {
+        next(error);
+      });
+  } else {
+    next(new Error("User must log in."));
+  }
+};
+
+const filterUserCourses = (req, res, next) => {
+  let currentUser = res.locals.currentUser;
+  // check whether a user is logged in
+  if (currentUser) {
+    let mappedCourses = res.locals.courses.map((course) => {
+      let userJoined = currentUser.courses.some((userCourse) => {
+        // Check whether the course exists in the user’s courses array.
+        return userCourse.equals(course._id);
+      });
+      // Modify course to add a flag indicating user association.
+      return Object.assign(course.toObject(), { joined: userJoined });
+    });
+    res.locals.courses = mappedCourses;
+    next();
+  } else {
+    next();
+  }
 };
 
 module.exports = {
@@ -155,4 +212,8 @@ module.exports = {
   showEdit,
   updateCourse,
   deleteCourse,
+  respondJSON,
+  errorJSON,
+  joinCourse,
+  filterUserCourses,
 };

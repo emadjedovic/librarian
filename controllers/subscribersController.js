@@ -1,4 +1,5 @@
 const Subscriber = require("../models/subscriber");
+const StatusCodes = require("http-status-codes").StatusCodes;
 
 const getSubscriberParams = (body) => {
   return {
@@ -127,6 +128,30 @@ const deleteSubscriber = (req, res, next) => {
     });
 };
 
+const respondJSON = (req, res) => {
+  // handle the request from previous middleware
+  res.json({
+    status: StatusCodes.OK,
+    data: res.locals,
+  });
+};
+
+const errorJSON = (error, req, res, next) => {
+  let errorObject;
+  if (error) {
+    errorObject = {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error.message,
+    };
+  } else {
+    errorObject = {
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: "Unknown Error.",
+    };
+  }
+  res.json(errorObject);
+};
+
 module.exports = {
   getSubscriberParams,
   index,
@@ -139,4 +164,6 @@ module.exports = {
   showEdit,
   updateSubscriber,
   deleteSubscriber,
+  respondJSON,
+  errorJSON
 };
