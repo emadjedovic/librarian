@@ -11,7 +11,7 @@
     <style>
       body {
         margin: auto;
-        width: fit-content;
+        max-width: 80%;
         background-color: antiquewhite;
       }
       .content-wrapper {
@@ -21,6 +21,7 @@
       }
       .content {
         flex-grow: 1;
+        max-width: 100%;
       }
       .flashes {
         margin: 20px 0;
@@ -46,18 +47,15 @@
   <body>
     <div class="content-wrapper">
       <%- include('partials/navigation') %>
-      
-      <% if(loggedIn) { %>
-        <div id="apiToken"data-token="<%= currentUser.apiToken %>" style="display: none;">
-        <% } %>
     
-
       <div class="flashes">
-        <% if (flashMessages) { %> <% if (flashMessages.success) { %>
-        <div class="flash success"><%= flashMessages.success %></div>
-        <% } else if (flashMessages.error) { %>
-        <div class="flash error"><%= flashMessages.error %></div>
-        <% } %> <% } %>
+        <% if (flashMessages) { %>
+          <% if (flashMessages.success) { %>
+            <div class="flash success"><%= flashMessages.success %></div>
+          <% } else if (flashMessages.error) { %>
+            <div class="flash error"><%= flashMessages.error %></div>
+          <% } %>
+        <% } %>
       </div>
 
       <div class="content"><%- body %></div>

@@ -18,7 +18,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p class="text-muted">Feel free to explore our offerings!</p>
+        <!-- This message will be dynamically replaced by jQuery if the user is authenticated and there are courses -->
+        <p class="text-muted" id="modal-default-message">Please log in to view our latest courses.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

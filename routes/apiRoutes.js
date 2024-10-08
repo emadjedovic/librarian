@@ -1,10 +1,13 @@
 const router = require("express").Router();
 const coursesController = require("../controllers/api/coursesController");
 const usersController = require("../controllers/api/usersController");
+const redirectView = require("../controllers/usersController").redirectView
 const subscribersController = require("../controllers/api/subscribersController");
 
-// runs before every API request is handled
-router.use(usersController.verifyToken);
+// every route needs to use the verifyJWT middleware except for
+// the login route, which is used to generate JWT
+router.post("/login", usersController.apiAuthenticate, redirectView)
+router.use(usersController.verifyJWT)
 
 // COURSES
 router.get(
@@ -32,6 +35,7 @@ router.post(
     usersController.respondJSON
   );
 router.get("/users/:id", usersController.showUser, usersController.respondJSON);
+
 
 // SUBSCRIBERS
 router.get(

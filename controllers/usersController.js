@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const passport = require("passport");
+const jsonWebToken = require("jsonwebtoken");
 
 const getUserParams = (body) => {
   return {
@@ -74,6 +75,7 @@ const showUser = (req, res, next) => {
     });
 };
 
+
 const showView = (req, res) => {
     res.render("users/show");
 };
@@ -132,12 +134,42 @@ const login = (req, res) => {
 };
 
 // authenticate using local strategy
-const authenticate = passport.authenticate("local", {
-  failureRedirect: "/users/login",
-  failureFlash: "Failed to login.",
-  successRedirect: "/",
-  successFlash: "Logged in!",
-});
+const authenticate = (req, res, next) => {
+  passport.authenticate("local", (error, user, info) => {
+    if (error) {
+      req.flash("error", "Authentication error.");
+      return res.redirect("/users/login");
+    }
+    
+    if (!user) {
+      req.flash("error", "Failed to login.");
+      return res.redirect("/users/login");
+    }
+
+    // Successfully authenticated
+    req.login(user, (loginError) => {
+      if (loginError) {
+        req.flash("error", "Login failed.");
+        return res.redirect("/users/login");
+      }
+
+      // Generate a token
+      const signedToken = jsonWebToken.sign(
+        {
+          data: user._id,
+        },
+        "secret_encoding_passphrase",
+        { expiresIn: "1d" } // Set expiration to 1 day
+      );
+
+      req.session.token = signedToken;
+
+      req.flash("success", "Logged in!");
+      return res.redirect("/"); // Redirect to home page
+    });
+  })(req, res, next);
+};
+
 
 const logout = (req, res, next) => {
   req.logout((err) => {

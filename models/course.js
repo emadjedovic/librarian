@@ -25,13 +25,6 @@ const courseSchema = new mongoose.Schema(
   {
     timestamps: true,
   }
-  /*
-  items: [],
-  zipCode: {
-    type: Number,
-    min: [10000, "Zip code too short"],
-    max: 99999,
-  },*/
 );
 
 module.exports = mongoose.model("Course", courseSchema);

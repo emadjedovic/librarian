@@ -13,8 +13,14 @@
     <td><%= user.zipCode %></td>
   </tr>
   <tr>
-    <th>API token</th>
-    <td><%= user.apiToken %></td>
+    <th>JWT token</th>
+    <td style="overflow-wrap: break-word; word-wrap: break-word; word-break: break-all;">
+      <% if(loggedIn) { %>
+        <%= token %>
+        <% } else { %>
+        <p><i>Logged Out</i></p>
+        <% } %>
+    </td>
   </tr>
 </table>
 

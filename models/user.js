@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Subscriber = require("./subscriber");
-const randToken = require("rand-token");
 const passportLocalMongoose = require("passport-local-mongoose");
 
 const userSchema = new mongoose.Schema(
@@ -30,10 +29,7 @@ const userSchema = new mongoose.Schema(
     subscribedAccount: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Subscriber",
-    },
-    apiToken: {
-      type: String,
-    },
+    }
   },
 
   // a timestamps property to record createdAt and updatedAt dates
@@ -53,12 +49,6 @@ userSchema.plugin(passportLocalMongoose, {
 // (computed attribute - isn't saved in the database)
 userSchema.virtual("fullName").get(function () {
   return `${this.name.first} ${this.name.last}`;
-});
-
-userSchema.pre("save", function (next) {
-  let user = this;
-  if (!user.apiToken) user.apiToken = randToken.generate(16);
-  next();
 });
 
 userSchema.pre("save", function (next) {

@@ -1,8 +1,9 @@
 const User = require("../../models/user");
 const StatusCodes = require("http-status-codes").StatusCodes;
-// verify incoming API requests
-const token = process.env.TOKEN || "recipeT0k3n";
+const jsonWebToken = require("jsonwebtoken");
+const passport = require("passport");
 
+// Function to extract user parameters from the request body
 const getUserParams = (body) => {
   return {
     name: {
@@ -14,7 +15,7 @@ const getUserParams = (body) => {
   };
 };
 
-// store the user data on the response and call the next middleware function
+// Fetch all users
 const index = (req, res, next) => {
   User.find()
     .then((users) => {
@@ -27,6 +28,7 @@ const index = (req, res, next) => {
     });
 };
 
+// Fetch a specific user by ID
 const showUser = (req, res, next) => {
   let userId = req.params.id;
   User.findById(userId)
@@ -40,14 +42,15 @@ const showUser = (req, res, next) => {
     });
 };
 
+// Respond with user data in JSON format
 const respondJSON = (req, res) => {
-  // handle the request from previous middleware
   res.json({
     status: StatusCodes.OK,
     data: res.locals,
   });
 };
 
+// Handle errors and respond in JSON format
 const errorJSON = (error, req, res, next) => {
   let errorObject;
   if (error) {
@@ -64,33 +67,85 @@ const errorJSON = (error, req, res, next) => {
   res.json(errorObject);
 };
 
-const verifyToken = (req, res, next) => {
-  let token = req.query.apiToken;
+// Middleware to verify JWT for protected routes
+const verifyJWT = (req, res, next) => {
+  const token = req.headers["authorization"]?.split(" ")[1]; // Extract token from the Authorization header
   if (token) {
-    User.findOne({ apiToken: token })
-      .then((user) => {
-        if (user) next();
-        else next(new Error("Invalid API token."));
-      })
-      .catch((error) => {
-        next(new Error(error.message));
-      });
+    jsonWebToken.verify(
+      token,
+      "secret_encoding_passphrase",
+      (error, payload) => {
+        if (error) {
+          return res.status(StatusCodes.UNAUTHORIZED).json({
+            error: true,
+            message: "Invalid or expired token.",
+          });
+        }
+        // Attach user data to the request for further processing
+        User.findById(payload.data).then((user) => {
+          if (user) {
+            req.user = user; // Attach user to request object
+            next();
+          } else {
+            res.status(StatusCodes.FORBIDDEN).json({
+              error: true,
+              message: "No User account found.",
+            });
+          }
+        });
+      }
+    );
   } else {
-    next(new Error("Invalid API token."));
+    res.status(StatusCodes.UNAUTHORIZED).json({
+      error: true,
+      message: "Token is required.",
+    });
   }
 };
 
+// Create a new user
 const createUser = (req, res, next) => {
-  if (req.skip) next();
   let newUser = new User(getUserParams(req.body));
   User.register(newUser, req.body.password, (error, user) => {
-    if (user) {
-      next();
-    } else {
-      next(new Error(error.message));
+    if (error) {
+      return next(new Error(error.message));
     }
+    // Automatically authenticate after registration
+    passport.authenticate("local")(req, res, () => {
+      res.json({
+        success: true,
+        message: "User created successfully.",
+      });
+    });
   });
 };
+
+// Authenticate user and generate JWT
+
+const apiAuthenticate = (req, res, next) => {
+  passport.authenticate("local", (errors, user) => {
+    if (user) {
+      const signedToken = jsonWebToken.sign(
+        {
+          data: user._id,
+        },
+        "secret_encoding_passphrase",
+        { expiresIn: "1d" } // Set expiration to 1 day
+      );
+      req.session.token = signedToken
+      res.json({
+        success: true,
+        token: signedToken,
+      });
+    } else {
+      res.json({
+        success: false,
+        message: "Could not authenticate user.",
+      });
+    }
+  })(req, res, next);
+};
+
 
 module.exports = {
   getUserParams,
@@ -98,6 +153,7 @@ module.exports = {
   showUser,
   respondJSON,
   errorJSON,
-  verifyToken,
+  verifyJWT,
   createUser,
+  apiAuthenticate,
 };

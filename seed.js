@@ -96,22 +96,23 @@ mongoose
       {
         title: "Tomato Land",
         description: "Locally farmed tomatoes only",
-        zipCode: 12345,
-        items: ["cherry", "heirloom"],
+        maxStudents: 30,  // Example value, adjust as needed
+        cost: 50,         // Example cost, adjust as needed
       },
       {
         title: "Pizza Masterclass",
         description: "Learn the art of making gourmet pizzas",
-        zipCode: 67890,
-        items: ["mozzarella", "basil", "olive oil"],
+        maxStudents: 20,  // Example value, adjust as needed
+        cost: 75,         // Example cost, adjust as needed
       },
       {
         title: "Sourdough Bread Basics",
         description: "Master sourdough bread baking techniques",
-        zipCode: 54321,
-        items: ["flour", "yeast", "salt"],
+        maxStudents: 15,  // Example value, adjust as needed
+        cost: 40,         // Example cost, adjust as needed
       },
     ]);
+    
   })
   .then((courses) => {
     console.log("Courses created:", courses);
