@@ -1,14 +1,22 @@
 // no JavaScript is run until the DOM is loaded and ready
 $(document).ready(() => {
+  const apiToken = $("#apiToken").data("token");
+  console.log("API Token:", apiToken); // Log the API token
   // listen to a click event on a modal button
   $("#modal-button").click(() => {
+    console.log("Modal button clicked. Fetching courses...");
     // clear the modal from any previous content.
     $(".modal-body").html("");
     // request data from /courses?format=json asynchronously
-    $.get("/api/courses", (results = {}) => {
+    $.get(`/api/courses?apiToken=${apiToken}`, (results = {}) => {
+      console.log("API Response:", results);
       let data = results.data;
+      console.log("API Response:", data); // Log the API response
       // Check that the data object contains course information
-      if (!data || !data.courses) return;
+      if (!data || !data.courses) {
+        $(".modal-body").append("<p>No courses available.</p>");
+        return;
+      }
       // Loop through course data, and add elements to modal
       data.courses.forEach((course) => {
         $(".modal-body").append(
@@ -35,10 +43,11 @@ $(document).ready(() => {
 });
 
 let addJoinButtonListener = () => {
+  const apiToken = $("#apiToken").data("token");
   $(".join-button").click((event) => {
     let $button = $(event.target),
       courseId = $button.data("id");
-    $.get(`/api/courses/${courseId}/join`, (results = {}) => {
+    $.get(`/api/courses/${courseId}/join?apiToken=${apiToken}`, (results = {}) => {
       let data = results.data;
       // Check whether the join action was successful, and modify the button.
       if (data && data.success) {

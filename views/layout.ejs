@@ -46,6 +46,11 @@
   <body>
     <div class="content-wrapper">
       <%- include('partials/navigation') %>
+      
+      <% if(loggedIn) { %>
+        <div id="apiToken"data-token="<%= currentUser.apiToken %>" style="display: none;">
+        <% } %>
+    
 
       <div class="flashes">
         <% if (flashMessages) { %> <% if (flashMessages.success) { %>

@@ -1,5 +1,4 @@
 const Subscriber = require("../models/subscriber");
-const StatusCodes = require("http-status-codes").StatusCodes;
 
 const getSubscriberParams = (body) => {
   return {
@@ -22,11 +21,7 @@ const index = (req, res, next) => {
 };
 
 const indexView = (req, res) => {
-  if (req.query.format === "json") {
-    res.json(res.locals.subscribers);
-  } else {
     res.render("subscribers/index");
-  }
 };
 
 const newSubscriber = (req, res) => {
@@ -69,11 +64,7 @@ const showSubscriber = (req, res, next) => {
 };
 
 const showView = (req, res) => {
-  if (req.query.format === "json") {
-    res.json(res.locals.subscriber);
-  } else {
     res.render("subscribers/show");
-  }
 };
 
 const showEdit = (req, res, next) => {
@@ -128,30 +119,6 @@ const deleteSubscriber = (req, res, next) => {
     });
 };
 
-const respondJSON = (req, res) => {
-  // handle the request from previous middleware
-  res.json({
-    status: StatusCodes.OK,
-    data: res.locals,
-  });
-};
-
-const errorJSON = (error, req, res, next) => {
-  let errorObject;
-  if (error) {
-    errorObject = {
-      status: StatusCodes.INTERNAL_SERVER_ERROR,
-      message: error.message,
-    };
-  } else {
-    errorObject = {
-      status: StatusCodes.INTERNAL_SERVER_ERROR,
-      message: "Unknown Error.",
-    };
-  }
-  res.json(errorObject);
-};
-
 module.exports = {
   getSubscriberParams,
   index,
@@ -164,6 +131,4 @@ module.exports = {
   showEdit,
   updateSubscriber,
   deleteSubscriber,
-  respondJSON,
-  errorJSON
 };

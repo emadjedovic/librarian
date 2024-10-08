@@ -24,7 +24,8 @@
     "mongoose": "^8.7.0",
     "passport": "^0.7.0",
     "passport-local-mongoose": "^8.0.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "rand-token": "^1.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

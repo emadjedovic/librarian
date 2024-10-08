@@ -60,6 +60,7 @@ app.use((req, res, next) => {
 
 app.set("port", process.env.PORT || 3000);
 app.set("view engine", "ejs");
+app.set("token", process.env.TOKEN || "recipeT0k3n")
 
 const router = require("./routes/index") 
 app.use("/", router)

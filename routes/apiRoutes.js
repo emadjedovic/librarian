@@ -1,13 +1,12 @@
-// (instead of query ?format=json)
-
 const router = require("express").Router();
-const coursesController = require("../controllers/coursesController");
-const usersController = require("../controllers/usersController");
-const subscribersController = require("../controllers/subscribersController");
+const coursesController = require("../controllers/api/coursesController");
+const usersController = require("../controllers/api/usersController");
+const subscribersController = require("../controllers/api/subscribersController");
+
+// runs before every API request is handled
+router.use(usersController.verifyToken);
 
 // COURSES
-
-// router.get("/courses", coursesController.index, coursesController.respondJSON);
 router.get(
   "/courses",
   coursesController.index,
@@ -26,20 +25,15 @@ router.get(
 );
 
 // USERS
-
 router.get("/users", usersController.index, usersController.respondJSON);
-/*
 router.post(
-  "/users/create",
-  usersController.validate,
-  usersController.createUser,
-  usersController.respondJSON
-);
-*/
+    "/users/create",
+    usersController.createUser,
+    usersController.respondJSON
+  );
 router.get("/users/:id", usersController.showUser, usersController.respondJSON);
 
 // SUBSCRIBERS
-
 router.get(
   "/subscribers",
   subscribersController.index,

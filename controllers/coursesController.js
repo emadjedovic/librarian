@@ -1,6 +1,4 @@
 const Course = require("../models/course");
-const User = require("../models/user");
-const StatusCodes = require("http-status-codes").StatusCodes;
 
 const getCourseParams = (body) => {
   return {
@@ -8,7 +6,6 @@ const getCourseParams = (body) => {
     description: body.description,
     maxStudents: parseInt(body.maxStudents),
     cost: parseInt(body.cost),
-    //zipCode: body.zipCode
   };
 };
 
@@ -27,11 +24,7 @@ const index = (req, res, next) => {
 
 // seperate action for rendering the view
 const indexView = (req, res) => {
-  if (req.query.format === "json") {
-    res.json(res.locals.courses);
-  } else {
-    res.render("courses/index");
-  }
+  res.render("courses/index");
 };
 
 // the new action
@@ -78,11 +71,7 @@ const showCourse = (req, res, next) => {
 };
 
 const showView = (req, res) => {
-  if (req.query.format === "json") {
-    res.json(res.locals.course);
-  } else {
-    res.render("courses/show");
-  }
+  res.render("courses/show");
 };
 
 const showEdit = (req, res, next) => {
@@ -135,71 +124,6 @@ const deleteCourse = (req, res, next) => {
     });
 };
 
-const respondJSON = (req, res) => {
-  // handle the request from previous middleware
-  res.json({
-    status: StatusCodes.OK,
-    data: res.locals,
-  });
-};
-
-const errorJSON = (error, req, res, next) => {
-  let errorObject;
-  if (error) {
-    errorObject = {
-      status: StatusCodes.INTERNAL_SERVER_ERROR,
-      message: error.message,
-    };
-  } else {
-    errorObject = {
-      status: StatusCodes.INTERNAL_SERVER_ERROR,
-      message: "Unknown Error.",
-    };
-  }
-  res.json(errorObject);
-};
-
-const joinCourse = (req, res, next) => {
-  let courseId = req.params.id;
-  const currentUser = req.user;
-  // check whether a user is logged in
-  if (currentUser) {
-    User.findByIdAndUpdate(currentUser, {
-      $addToSet: {
-        courses: courseId,
-      },
-    })
-      .then(() => {
-        res.locals.success = true;
-        next();
-      })
-      .catch((error) => {
-        next(error);
-      });
-  } else {
-    next(new Error("User must log in."));
-  }
-};
-
-const filterUserCourses = (req, res, next) => {
-  let currentUser = res.locals.currentUser;
-  // check whether a user is logged in
-  if (currentUser) {
-    let mappedCourses = res.locals.courses.map((course) => {
-      let userJoined = currentUser.courses.some((userCourse) => {
-        // Check whether the course exists in the user’s courses array.
-        return userCourse.equals(course._id);
-      });
-      // Modify course to add a flag indicating user association.
-      return Object.assign(course.toObject(), { joined: userJoined });
-    });
-    res.locals.courses = mappedCourses;
-    next();
-  } else {
-    next();
-  }
-};
-
 module.exports = {
   getCourseParams,
   index,
@@ -212,8 +136,4 @@ module.exports = {
   showEdit,
   updateCourse,
   deleteCourse,
-  respondJSON,
-  errorJSON,
-  joinCourse,
-  filterUserCourses,
 };
