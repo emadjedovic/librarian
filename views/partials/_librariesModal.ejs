@@ -1,0 +1,29 @@
+<!-- Button to trigger modal -->
+<button
+  id="modal-button"
+  type="button"
+  data-bs-toggle="modal"
+  data-bs-target="#myModal"
+  class="btn btn-outline-dark"
+>
+  Your Libraries
+</button>
+
+<!-- Modal Structure -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">YOUR LIBRARIES</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- This message will be dynamically replaced by jQuery if the member is authenticated and there are libraries -->
+        <p class="text-muted" id="modal-default-message">Please log in first.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

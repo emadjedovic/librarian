@@ -1,0 +1,227 @@
+<div class="container" style="width: 400px">
+  <form method="POST" class="form text-center" action="<%=`/libraries/${library._id}/update?_method=PUT`%>">
+    <h2>Edit Library</h2>
+    
+    <input
+      type="text"
+      class="form-control m-2"
+      name="name"
+      id="inputName"
+      value="<%= library.name %>"
+      placeholder="Library Name"
+      required
+    />
+
+    <input
+      type="text"
+      class="form-control m-2"
+      name="address"
+      id="inputAddress"
+      value="<%= library.address %>"
+      placeholder="Address"
+      required
+    />
+
+    <input
+      type="number"
+      class="form-control m-2"
+      name="zipCode"
+      id="inputZipCode"
+      value="<%= library.zipCode %>"
+      placeholder="Zip Code"
+      min="1000"
+      max="99999"
+      required
+    />
+
+    <div class="m-2">
+      <label for="inputPhone" class="form-label">Contact Phone</label>
+      <input
+        type="text"
+        class="form-control"
+        name="contact.phone"
+        id="inputPhone"
+        value="<%= library.contact.phone %>"
+        placeholder="Phone"
+      />
+    </div>
+
+    <div class="m-2">
+      <label for="inputEmail" class="form-label">Contact Email</label>
+      <input
+        type="email"
+        class="form-control"
+        name="contact.email"
+        id="inputEmail"
+        value="<%= library.contact.email %>"
+        placeholder="Email"
+      />
+    </div>
+
+    <div class="m-2">
+      <label for="inputWebsite" class="form-label">Website</label>
+      <input
+        type="url"
+        class="form-control"
+        name="contact.website"
+        id="inputWebsite"
+        value="<%= library.contact.website %>"
+        placeholder="Website"
+      />
+    </div>
+
+    <h5 class="mt-3">Opening Hours</h5>
+    <div class="m-2">
+      <label for="inputMondayOpen" class="form-label">Monday Open</label>
+      <input
+        type="time"
+        class="form-control"
+        name="openingHours.monday.open"
+        id="inputMondayOpen"
+        value="<%= library.openingHours.monday.open %>"
+      />
+      <label for="inputMondayClose" class="form-label">Monday Close</label>
+      <input
+        type="time"
+        class="form-control"
+        name="openingHours.monday.close"
+        id="inputMondayClose"
+        value="<%= library.openingHours.monday.close %>"
+      />
+    </div>
+
+    <div class="m-2">
+      <label for="inputTuesdayOpen" class="form-label">Tuesday Open</label>
+      <input
+        type="time"
+        name="openingHours.tuesday.open"
+        id="inputTuesdayOpen"
+        class="form-control"
+        value="<%= library.openingHours.tuesday.open %>"
+      />
+      <label for="inputTuesdayClose" class="form-label">Tuesday Close</label>
+      <input
+        type="time"
+        name="openingHours.tuesday.close"
+        id="inputTuesdayClose"
+        class="form-control"
+        value="<%= library.openingHours.tuesday.open %>"
+      />
+    </div>
+    <div class="m-2">
+      <label for="inputWednesdayOpen" class="form-label">Wednesday Open</label>
+      <input
+        type="time"
+        name="openingHours.wednesday.open"
+        id="inputWednesdayOpen"
+        class="form-control"
+        value="<%= library.openingHours.wednesday.open %>"
+      />
+      <label for="inputWednesdayClose" class="form-label"
+        >Wednesday Close</label
+      >
+      <input
+        type="time"
+        name="openingHours.wednesday.close"
+        id="inputWednesdayClose"
+        class="form-control"
+        value="<%= library.openingHours.wednesday.open %>"
+      />
+    </div>
+    <div class="m-2">
+      <label for="inputThursdayOpen" class="form-label">Thursday Open</label>
+      <input
+        type="time"
+        name="openingHours.thursday.open"
+        id="inputThursdayOpen"
+        class="form-control"
+        value="<%= library.openingHours.thursday.open %>"
+      />
+      <label for="inputThursdayClose" class="form-label">Thursday Close</label>
+      <input
+        type="time"
+        name="openingHours.thursday.close"
+        id="inputThursdayClose"
+        class="form-control"
+        value="<%= library.openingHours.thursday.open %>"
+      />
+    </div>
+    <div class="m-2">
+      <label for="inputFridayOpen" class="form-label">Friday Open</label>
+      <input
+        type="time"
+        name="openingHours.friday.open"
+        id="inputFridayOpen"
+        class="form-control"
+        value="<%= library.openingHours.friday.open %>"
+      />
+      <label for="inputFridayClose" class="form-label">Friday Close</label>
+      <input
+        type="time"
+        name="openingHours.friday.close"
+        id="inputFridayClose"
+        class="form-control"
+        value="<%= library.openingHours.friday.open %>"
+      />
+    </div>
+    <div class="m-2">
+      <label for="inputSaturdayOpen" class="form-label">Saturday Open</label>
+      <input
+        type="time"
+        name="openingHours.saturday.open"
+        id="inputSaturdayOpen"
+        class="form-control"
+        value="<%= library.openingHours.saturday.open %>"
+      />
+      <label for="inputSaturdayClose" class="form-label">Saturday Close</label>
+      <input
+        type="time"
+        name="openingHours.saturday.close"
+        id="inputSaturdayClose"
+        class="form-control"
+        value="<%= library.openingHours.saturday.open %>"
+      />
+    </div>
+    <div class="m-2">
+      <label for="inputSundayOpen" class="form-label">Sunday Open</label>
+      <input
+        type="time"
+        name="openingHours.sunday.open"
+        id="inputSundayOpen"
+        class="form-control"
+        value="<%= library.openingHours.sunday.open %>"
+      />
+      <label for="inputSundayClose" class="form-label">Sunday Close</label>
+      <input
+        type="time"
+        name="openingHours.sunday.close"
+        id="inputSundayClose"
+        class="form-control"
+        value="<%= library.openingHours.sunday.open %>"
+      />
+
+    <div class="m-2">
+      <label for="inputMembershipFee" class="form-label">Membership Fee</label>
+      <input
+        type="number"
+        class="form-control"
+        name="membershipFee"
+        id="inputMembershipFee"
+        value="<%= library.membershipFee %>"
+        min="0"
+      />
+    </div>
+
+    <div class="m-2">
+      <label for="inputRulesAndPolicies" class="form-label">Rules and Policies</label>
+      <textarea
+        class="form-control"
+        name="rulesAndPolicies"
+        id="inputRulesAndPolicies"
+        placeholder="Rules and Policies"
+      ><%= library.rulesAndPolicies %></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-dark m-2">UPDATE</button>
+  </form>
+</div>

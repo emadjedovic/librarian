@@ -1,0 +1,97 @@
+<div class="container" style="width: 500px">
+    <form action="<%= `/books/${book._id}/update?_method=PUT` %>" class="form text-center" method="POST">
+      <h2>Edit Book: <%= book.title %></h2>
+  
+      <input
+        type="text"
+        name="title"
+        id="inputTitle"
+        value="<%= book.title %>"
+        placeholder="Title"
+        class="form-control m-2"
+        required
+      />
+  
+      <input
+        type="text"
+        name="author"
+        id="inputAuthor"
+        value="<%= book.author %>"
+        placeholder="Author"
+        class="form-control m-2"
+        required
+      />
+  
+      <input
+        type="text"
+        name="ISBN"
+        id="inputISBN"
+        value="<%= book.ISBN %>"
+        placeholder="13-digit ISBN"
+        class="form-control m-2"
+        pattern="\d{13}"
+        required
+      />
+  
+      <select name="genre" id="inputGenre" class="form-control m-2" required>
+        <option value="<%= book.genre %>"><%= book.genre %></option>
+        <option value="Fiction">Fiction</option>
+        <option value="Non-Fiction">Non-Fiction</option>
+        <option value="Mystery">Mystery</option>
+        <option value="Science Fiction">Science Fiction</option>
+        <option value="Fantasy">Fantasy</option>
+        <option value="Biography">Biography</option>
+        <option value="History">History</option>
+        <option value="Children">Children</option>
+        <option value="Other">Other</option>
+      </select>
+  
+      <input
+        type="date"
+        name="publishedDate"
+        id="inputPublishedDate"
+        value="<%= book.publishedDate.toISOString().split('T')[0] %>"
+        class="form-control m-2"
+        required
+      />
+  
+      <input
+        type="number"
+        name="pages"
+        id="inputPages"
+        value="<%= book.pages %>"
+        placeholder="Number of Pages"
+        class="form-control m-2"
+        min="1"
+        required
+      />
+  
+      <input
+        type="number"
+        name="availableCopies"
+        id="inputAvailableCopies"
+        value="<%= book.availableCopies %>"
+        placeholder="Available Copies"
+        class="form-control m-2"
+        min="0"
+      />
+  
+      <select name="library" id="inputLibrary" class="form-control m-2" required>
+        <option value="" disabled>Select Library</option>
+        <% libraries.forEach(library => { %>
+          <option value="<%= library._id %>" <%= library._id.equals(book.library) ? 'selected' : '' %>><%= library.name %></option>
+        <% }) %>
+      </select>
+  
+      <textarea
+        name="summary"
+        id="inputSummary"
+        placeholder="Summary"
+        class="form-control m-2"
+        maxlength="1000"
+      ><%= book.summary %></textarea>
+  
+      <button type="submit" class="btn btn-dark m-2">UPDATE BOOK</button>
+    </form>
+  </div>
+  

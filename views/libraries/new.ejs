@@ -1,0 +1,209 @@
+<div class="container" style="width: 400px">
+  <form action="/libraries/create" class="form text-center" method="POST">
+    <h2 class="mb-4">Add a New Library</h2>
+
+    <input
+      type="text"
+      name="name"
+      id="inputName"
+      placeholder="Library Name"
+      class="form-control m-2"
+      required
+    />
+
+    <input
+      type="text"
+      name="address"
+      id="inputAddress"
+      placeholder="Address"
+      class="form-control m-2"
+      required
+    />
+
+    <input
+      type="number"
+      name="zipCode"
+      id="inputZipCode"
+      placeholder="Zip Code"
+      class="form-control m-2"
+      min="1000"
+      max="99999"
+      required
+    />
+
+    <div class="m-2">
+      <label for="inputPhone" class="form-label">Contact Phone</label>
+      <input
+        type="text"
+        name="contact.phone"
+        id="inputPhone"
+        placeholder="Phone"
+        class="form-control"
+      />
+    </div>
+
+    <div class="m-2">
+      <label for="inputEmail" class="form-label">Contact Email</label>
+      <input
+        type="email"
+        name="contact.email"
+        id="inputEmail"
+        placeholder="Email"
+        class="form-control"
+      />
+    </div>
+
+    <div class="m-2">
+      <label for="inputWebsite" class="form-label">Website</label>
+      <input
+        type="url"
+        name="contact.website"
+        id="inputWebsite"
+        placeholder="Website"
+        class="form-control"
+      />
+    </div>
+
+    <h5 class="mt-3">Opening Hours</h5>
+    <div class="m-2">
+      <label for="inputMondayOpen" class="form-label">Monday Open</label>
+      <input
+        type="time"
+        name="openingHours.monday.open"
+        id="inputMondayOpen"
+        class="form-control"
+      />
+      <label for="inputMondayClose" class="form-label">Monday Close</label>
+      <input
+        type="time"
+        name="openingHours.monday.close"
+        id="inputMondayClose"
+        class="form-control"
+      />
+    </div>
+    <div class="m-2">
+      <label for="inputTuesdayOpen" class="form-label">Tuesday Open</label>
+      <input
+        type="time"
+        name="openingHours.tuesday.open"
+        id="inputTuesdayOpen"
+        class="form-control"
+      />
+      <label for="inputTuesdayClose" class="form-label">Tuesday Close</label>
+      <input
+        type="time"
+        name="openingHours.tuesday.close"
+        id="inputTuesdayClose"
+        class="form-control"
+      />
+    </div>
+    <div class="m-2">
+      <label for="inputWednesdayOpen" class="form-label">Wednesday Open</label>
+      <input
+        type="time"
+        name="openingHours.wednesday.open"
+        id="inputWednesdayOpen"
+        class="form-control"
+      />
+      <label for="inputWednesdayClose" class="form-label"
+        >Wednesday Close</label
+      >
+      <input
+        type="time"
+        name="openingHours.wednesday.close"
+        id="inputWednesdayClose"
+        class="form-control"
+      />
+    </div>
+    <div class="m-2">
+      <label for="inputThursdayOpen" class="form-label">Thursday Open</label>
+      <input
+        type="time"
+        name="openingHours.thursday.open"
+        id="inputThursdayOpen"
+        class="form-control"
+      />
+      <label for="inputThursdayClose" class="form-label">Thursday Close</label>
+      <input
+        type="time"
+        name="openingHours.thursday.close"
+        id="inputThursdayClose"
+        class="form-control"
+      />
+    </div>
+    <div class="m-2">
+      <label for="inputFridayOpen" class="form-label">Friday Open</label>
+      <input
+        type="time"
+        name="openingHours.friday.open"
+        id="inputFridayOpen"
+        class="form-control"
+      />
+      <label for="inputFridayClose" class="form-label">Friday Close</label>
+      <input
+        type="time"
+        name="openingHours.friday.close"
+        id="inputFridayClose"
+        class="form-control"
+      />
+    </div>
+    <div class="m-2">
+      <label for="inputSaturdayOpen" class="form-label">Saturday Open</label>
+      <input
+        type="time"
+        name="openingHours.saturday.open"
+        id="inputSaturdayOpen"
+        class="form-control"
+      />
+      <label for="inputSaturdayClose" class="form-label">Saturday Close</label>
+      <input
+        type="time"
+        name="openingHours.saturday.close"
+        id="inputSaturdayClose"
+        class="form-control"
+      />
+    </div>
+    <div class="m-2">
+      <label for="inputSundayOpen" class="form-label">Sunday Open</label>
+      <input
+        type="time"
+        name="openingHours.sunday.open"
+        id="inputSundayOpen"
+        class="form-control"
+      />
+      <label for="inputSundayClose" class="form-label">Sunday Close</label>
+      <input
+        type="time"
+        name="openingHours.sunday.close"
+        id="inputSundayClose"
+        class="form-control"
+      />
+    </div>
+
+    <div class="m-2">
+      <label for="inputMembershipFee" class="form-label">Membership Fee</label>
+      <input
+        type="number"
+        name="membershipFee"
+        id="inputMembershipFee"
+        value="0"
+        min="0"
+        class="form-control"
+      />
+    </div>
+
+    <div class="m-2">
+      <label for="inputRulesAndPolicies" class="form-label"
+        >Rules and Policies</label
+      >
+      <textarea
+        name="rulesAndPolicies"
+        id="inputRulesAndPolicies"
+        placeholder="Rules and Policies"
+        class="form-control"
+      ></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-dark m-2">ADD</button>
+  </form>
+</div>

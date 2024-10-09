@@ -7,25 +7,13 @@
             <a class="nav-link btn" href="/">Home</a>
           </li>
           <li class="nav-item m-2">
-            <a class="nav-link btn" href="/courses/new">Add Course</a>
+            <a class="nav-link btn" href="/libraries">Libraries</a>
           </li>
           <li class="nav-item m-2">
-            <a class="nav-link btn" href="/courses">Courses</a>
+            <%- include ('_librariesModal') %>
           </li>
           <li class="nav-item m-2">
-            <%- include ('_coursesModal') %>
-          </li>
-          <li class="nav-item m-2">
-            <a class="nav-link btn" href="/subscribers/new">Subscribe</a>
-          </li>
-          <li class="nav-item m-2">
-            <a class="nav-link btn" href="/subscribers">Subscribers</a>
-          </li>
-          <li class="nav-item m-2">
-            <a class="nav-link btn" href="/users">Users</a>
-          </li>
-          <li class="nav-item m-2">
-            <a class="nav-link btn" href="/users/new">Sign In</a>
+            <a class="nav-link btn" href="/members/new">Sign In</a>
           </li>
         </ul>
         
@@ -33,14 +21,14 @@
       <!-- Login/Logout div in the upper-right corner -->
       <div class="position-absolute top-0 end-0 pt-2">
         <% if (loggedIn) { %>
-          <a href="<%=`/users/${currentUser._id}`%>" class="text-decoration-none text-dark">
-            <p class="fw-bold mb-3">Welcome, <br><%= currentUser.fullName %></p>
+          <a href="<%=`/members/${currentMember._id}`%>" class="text-decoration-none text-dark">
+            <p class="fw-bold mb-3">Welcome, <br><%= currentMember.fullName %></p>
           </a>
-          <a href="/users/logout">
+          <a href="/members/logout">
             <button class="btn btn-success" style="border-radius: 1rem;">LOG OUT</button>
           </a>
         <% } else { %>
-          <a href="/users/login">
+          <a href="/members/login">
             <button class="btn btn-success" style="border-radius: 1rem;">LOG IN</button>
           </a>
         <% } %>
