@@ -21,7 +21,12 @@
         <li class="nav-item">
           <a class="nav-link" href="/libraries">Libraries</a>
         </li>
-        
+        <li class="nav-item">
+          <a class="nav-link" href="/users">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/books">Books</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="/users/new">Register</a>
         </li>
@@ -30,15 +35,12 @@
       <!-- Login/Logout section -->
       <div class="ms-auto">
         <% if (loggedIn) { %>
-        <a href="<%=`/users/${currentUser._id}`%>" class="text-dark">
-          <span class="fw-bold">Welcome, <%= currentUser.fullName %></span>
-        </a>
         <a href="/users/logout">
-          <button class="btn btn-dark">LOG OUT</button>
+          <button class="btn btn-outline-dark">LOG OUT</button>
         </a>
         <% } else { %>
         <a href="/users/login">
-          <button class="btn btn-dark">LOGIN</button>
+          <button class="btn btn-outline-dark">LOGIN</button>
         </a>
         <% } %>
       </div>

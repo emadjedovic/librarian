@@ -1,0 +1,62 @@
+<!-- Button to trigger modal -->
+<button
+  id="modal-button"
+  type="button"
+  data-bs-toggle="modal"
+  data-bs-target="#myModal"
+  class="btn btn-outline-dark"
+>
+  EDIT USER INFO
+</button>
+
+<!-- Modal Structure -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">EDIT USER INFO</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- apply the existing users attribute values in edit form-->
+<!-- submit the form with a POST method to the /users/:id/update?_method=PUT route.  -->
+
+<div class="container" style="width: 400px">
+    <form method="POST" class="form text-center" action="<%=`/users/${currentUser._id}/update?_method=PUT`%>">
+      <input
+        type="text"
+        class="form-control m-2"
+        name="firstName"
+        id="inputFirstName"
+        value="<%=currentUser.firstName %>"
+        placeholder="First"
+        autofocus
+      />
+      <input
+        type="text"
+        class="form-control m-2"
+        name="lastName"
+        id="inputLastName"
+        value="<%=currentUser.lastName %>"
+        placeholder="Last"
+      />
+      <input
+        type="text"
+        class="form-control m-2"
+        name="zipCode"
+        id="inputZipCode"
+        pattern="\d*"
+        value="<%= currentUser.zipCode %>"
+        placeholder="Zip Code"
+      />
+      <button type="submit" class="btn btn-outline-dark m-2">UPDATE</button>
+    </form>
+  </div>
+  
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

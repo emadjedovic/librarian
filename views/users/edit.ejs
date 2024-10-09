@@ -22,24 +22,6 @@
       placeholder="Last"
     />
     <input
-      type="password"
-      class="form-control m-2"
-      name="password"
-      id="inputPassword"
-      value="<%= user.password %>"
-      placeholder="Password"
-      required
-    />
-    <input
-      type="email"
-      class="form-control m-2"
-      name="email"
-      id="inputEmail"
-      value="<%=user.email %>"
-      placeholder="Email address"
-      required
-    />
-    <input
       type="text"
       class="form-control m-2"
       name="zipCode"
@@ -47,8 +29,7 @@
       pattern="\d*"
       value="<%= user.zipCode %>"
       placeholder="Zip Code"
-      required
     />
-    <button type="submit" class="btn btn-dark m-2">UPDATE</button>
+    <button type="submit" class="btn btn-outline-dark m-2">UPDATE</button>
   </form>
 </div>

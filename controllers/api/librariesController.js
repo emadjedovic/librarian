@@ -77,7 +77,7 @@ const joinLibrary = (req, res, next) => {
 };
 
 const filterUserLibraries = (req, res, next) => {
-  let currentUser = res.locals.currentMember;
+  let currentUser = res.locals.currentUser;
   // check whether a user is logged in
   if (currentUser) {
     let mappedLibraries = res.locals.libraries.map((library) => {

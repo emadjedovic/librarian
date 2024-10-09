@@ -50,16 +50,16 @@
 
 <div class="container mt-3">
   <div>
-    <a href="/libraries" class="btn btn-dark mt-1">View All Libraries</a>
+    <a href="/libraries" class="btn btn-outline-dark mt-1">View All Libraries</a>
   </div>
   <div>
-    <a href="<%=`/libraries/${library._id}/edit`%>" class="btn btn-dark mt-1">Edit Library Details</a>
+    <a href="<%=`/libraries/${library._id}/edit`%>" class="btn btn-outline-dark mt-1">Edit Library Details</a>
   </div>
   <div>
     <a
       href="<%= `/libraries/${library._id}/delete?_method=DELETE` %>"
       onclick="return confirm('Are you sure you want to delete this library?')"
-      class="btn btn-dark mt-1"
+      class="btn btn-outline-dark mt-1"
     >Delete</a>
     </div>
 </div>
