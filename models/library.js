@@ -39,8 +39,7 @@ const librarySchema = new mongoose.Schema(
     rulesAndPolicies: {
       type: String,
       default: "Please return books on time and treat library property with care."
-    },    
-    events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
+    }
   },
 
   {

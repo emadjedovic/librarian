@@ -1,1 +1,1 @@
-models: book, staff
+models: staff

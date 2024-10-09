@@ -1,15 +1,15 @@
-<!-- apply the existing members attribute values in edit form-->
-<!-- submit the form with a POST method to the /members/:id/update?_method=PUT route.  -->
+<!-- apply the existing users attribute values in edit form-->
+<!-- submit the form with a POST method to the /users/:id/update?_method=PUT route.  -->
 
 <div class="container" style="width: 400px">
-  <form method="POST" class="form text-center" action="<%=`/members/${member._id}/update?_method=PUT`%>">
-    <h2>Edit member:</h2>
+  <form method="POST" class="form text-center" action="<%=`/users/${user._id}/update?_method=PUT`%>">
+    <h2>Edit user:</h2>
     <input
       type="text"
       class="form-control m-2"
       name="firstName"
       id="inputFirstName"
-      value="<%=member.firstName %>"
+      value="<%=user.firstName %>"
       placeholder="First"
       autofocus
     />
@@ -18,7 +18,7 @@
       class="form-control m-2"
       name="lastName"
       id="inputLastName"
-      value="<%=member.lastName %>"
+      value="<%=user.lastName %>"
       placeholder="Last"
     />
     <input
@@ -26,7 +26,7 @@
       class="form-control m-2"
       name="password"
       id="inputPassword"
-      value="<%= member.password %>"
+      value="<%= user.password %>"
       placeholder="Password"
       required
     />
@@ -35,7 +35,7 @@
       class="form-control m-2"
       name="email"
       id="inputEmail"
-      value="<%=member.email %>"
+      value="<%=user.email %>"
       placeholder="Email address"
       required
     />
@@ -45,7 +45,7 @@
       name="zipCode"
       id="inputZipCode"
       pattern="\d*"
-      value="<%= member.zipCode %>"
+      value="<%= user.zipCode %>"
       placeholder="Zip Code"
       required
     />

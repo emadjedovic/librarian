@@ -1,4 +1,4 @@
-const Book = require("../models/book");
+const Book = require("../../models/book");
 const StatusCodes = require("http-status-codes").StatusCodes;
 
 // Display all books

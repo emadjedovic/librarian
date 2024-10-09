@@ -1,19 +1,19 @@
 const router = require("express").Router();
 const librariesController = require("../controllers/api/librariesController");
-const membersController = require("../controllers/api/membersController");
+const usersController = require("../controllers/api/usersController");
 const booksController = require("../controllers/api/booksController")
-const redirectView = require("../controllers/membersController").redirectView
+const redirectView = require("../controllers/usersController").redirectView
 
 // every route needs to use the verifyJWT middleware except for
 // the login route, which is used to generate JWT
-router.post("/login", membersController.apiAuthenticate, redirectView)
-router.use(membersController.verifyJWT)
+router.post("/login", usersController.apiAuthenticate, redirectView)
+router.use(usersController.verifyJWT)
 
 // LIBRARIES
 router.get(
   "/libraries",
   librariesController.index,
-  librariesController.filterMemberLibraries,
+  librariesController.filterUserLibraries,
   librariesController.respondJSON
 );
 router.get(
@@ -31,14 +31,14 @@ router.get(
 router.get("/books", booksController.index, booksController.respondJSON)
 router.get("/books/:id", booksController.showBook, booksController.respondJSON)
 
-// MEMBERS
-router.get("/members", membersController.index, membersController.respondJSON);
+// USERS
+router.get("/users", usersController.index, usersController.respondJSON);
 router.post(
-    "/members/create",
-    membersController.createMember,
-    membersController.respondJSON
+    "/users/create",
+    usersController.createUser,
+    usersController.respondJSON
   );
-router.get("/members/:id", membersController.showMember, membersController.respondJSON);
+router.get("/users/:id", usersController.showUser, usersController.respondJSON);
 
 router.use(librariesController.errorJSON);
 

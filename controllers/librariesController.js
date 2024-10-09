@@ -26,7 +26,7 @@ const getLibraryParams = (body) => {
 };
 
 
-// store the member data on the response and call the next middleware function
+// store the user data on the response and call the next middleware function
 const index = (req, res, next) => {
   Library.find()
     .then((libraries) => {

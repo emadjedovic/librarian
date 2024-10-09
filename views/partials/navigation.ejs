@@ -1,39 +1,47 @@
-<nav class="navbar m-3">
-    <div class="container text-center">
-      <h1 class="mx-auto">Capricciosity</h1>
-      <div class="w-100">
-        <ul class="navbar-nav d-flex flex-row justify-content-center">
-          <li class="nav-item m-2">
-            <a class="nav-link btn" href="/">Home</a>
-          </li>
-          <li class="nav-item m-2">
-            <a class="nav-link btn" href="/libraries">Libraries</a>
-          </li>
-          <li class="nav-item m-2">
-            <%- include ('_librariesModal') %>
-          </li>
-          <li class="nav-item m-2">
-            <a class="nav-link btn" href="/members/new">Sign In</a>
-          </li>
-        </ul>
+<nav class="navbar navbar-expand-lg navbar-light bg-light p-4">
+  <div class="container">
+    <a class="navbar-brand" href="/"> L I B R A R I A N </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-5">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/libraries">Libraries</a>
+        </li>
         
-      </div>
-      <!-- Login/Logout div in the upper-right corner -->
-      <div class="position-absolute top-0 end-0 pt-2">
+        <li class="nav-item">
+          <a class="nav-link" href="/users/new">Register</a>
+        </li>
+      </ul>
+
+      <!-- Login/Logout section -->
+      <div class="ms-auto">
         <% if (loggedIn) { %>
-          <a href="<%=`/members/${currentMember._id}`%>" class="text-decoration-none text-dark">
-            <p class="fw-bold mb-3">Welcome, <br><%= currentMember.fullName %></p>
-          </a>
-          <a href="/members/logout">
-            <button class="btn btn-success" style="border-radius: 1rem;">LOG OUT</button>
-          </a>
+        <a href="<%=`/users/${currentUser._id}`%>" class="text-dark">
+          <span class="fw-bold">Welcome, <%= currentUser.fullName %></span>
+        </a>
+        <a href="/users/logout">
+          <button class="btn btn-dark">LOG OUT</button>
+        </a>
         <% } else { %>
-          <a href="/members/login">
-            <button class="btn btn-success" style="border-radius: 1rem;">LOG IN</button>
-          </a>
+        <a href="/users/login">
+          <button class="btn btn-dark">LOGIN</button>
+        </a>
         <% } %>
       </div>
-      
     </div>
-  </nav>
-  
+  </div>
+</nav>
