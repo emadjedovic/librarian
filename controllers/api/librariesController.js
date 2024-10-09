@@ -1,8 +1,8 @@
 const Library = require("../../models/library");
-const Member = require("../../models/member");
+const User = require("../../models/user");
 const StatusCodes = require("http-status-codes").StatusCodes;
 
-// store the member data on the response and call the next middleware function
+// store the user data on the response and call the next middleware function
 const index = (req, res, next) => {
   Library.find()
     .then((libraries) => {
@@ -56,10 +56,10 @@ const errorJSON = (error, req, res, next) => {
 
 const joinLibrary = (req, res, next) => {
   let libraryId = req.params.id;
-  const currentMember = req.member;
-  // check whether a member is logged in
-  if (currentMember) {
-    Member.findByIdAndUpdate(currentMember, {
+  const currentUser = req.user;
+  // check whether a user is logged in
+  if (currentUser) {
+    User.findByIdAndUpdate(currentUser, {
       $addToSet: {
         libraries: libraryId,
       },
@@ -72,21 +72,21 @@ const joinLibrary = (req, res, next) => {
         next(error);
       });
   } else {
-    next(new Error("Member must log in."));
+    next(new Error("User must log in."));
   }
 };
 
-const filterMemberLibraries = (req, res, next) => {
-  let currentMember = res.locals.currentMember;
-  // check whether a member is logged in
-  if (currentMember) {
+const filterUserLibraries = (req, res, next) => {
+  let currentUser = res.locals.currentUser;
+  // check whether a user is logged in
+  if (currentUser) {
     let mappedLibraries = res.locals.libraries.map((library) => {
-      let memberJoined = currentMember.libraries.some((memberLibrary) => {
-        // Check whether the library exists in the member’s libraries array.
-        return memberLibrary.equals(library._id);
+      let userJoined = currentUser.libraries.some((userLibrary) => {
+        // Check whether the library exists in the user’s libraries array.
+        return userLibrary.equals(library._id);
       });
-      // Modify library to add a flag indicating member association.
-      return Object.assign(library.toObject(), { joined: memberJoined });
+      // Modify library to add a flag indicating user association.
+      return Object.assign(library.toObject(), { joined: userJoined });
     });
     res.locals.libraries = mappedLibraries;
     next();
@@ -101,5 +101,5 @@ module.exports = {
   respondJSON,
   errorJSON,
   joinLibrary,
-  filterMemberLibraries,
+  filterUserLibraries,
 };

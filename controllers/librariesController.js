@@ -26,11 +26,12 @@ const getLibraryParams = (body) => {
 };
 
 
-// store the member data on the response and call the next middleware function
+// store the user data on the response and call the next middleware function
 const index = (req, res, next) => {
   Library.find()
     .then((libraries) => {
       res.locals.libraries = libraries;
+      console.log("fetching...")
       next();
     })
     .catch((error) => {
@@ -166,11 +167,6 @@ const validateLibrary = [
   body('contact.email')
     .optional()
     .isEmail().withMessage('Please provide a valid email address'),
-
-  body('contact.website')
-  .optional()
-  .isURL()
-  .withMessage('Please provide a valid website URL'),
 
   body('membershipFee')
     .optional()

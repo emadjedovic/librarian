@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Library = require("./models/library");
-const Member = require("./models/member");
-const Book = require("./models/book"); // Import the Book model
+const User = require("./models/user");
+const Book = require("./models/book");
 const passport = require("passport");
 
 const dbURL = "mongodb://localhost:27017/librarian";
@@ -14,50 +14,14 @@ mongoose
     // Clear existing collections
     return Promise.all([
       Library.deleteMany(),
-      Member.deleteMany(),
-      Book.deleteMany(), // Clear books collection as well
+      User.deleteMany(),
+      Book.deleteMany(),
     ]);
   })
   .then(() => {
     console.log("Database cleared!");
 
-    const members = [
-      {
-        firstName: "Ema",
-        lastName: "Djedović",
-        email: "ema@gmail.com",
-        password: "pass123",
-        zipCode: 71000,
-      },
-      {
-        firstName: "Kenan",
-        lastName: "Konjić",
-        email: "kenan@gmail.com",
-        password: "pass123",
-        zipCode: 71000,
-      },
-      {
-        firstName: "Alma",
-        lastName: "Bašić",
-        email: "alma@gmail.com",
-        password: "pass123",
-        zipCode: 70230,
-      },
-    ];
-
-    const memberPromises = members.map((memberData) => {
-      const testMember = new Member(memberData);
-
-      // Using passport's register method to handle hashing and saving
-      return Member.register(testMember, memberData.password).then((member) => {
-        console.log(`Member registered: ${member.fullName}`);
-      });
-    });
-
-    return Promise.all(memberPromises);
-  })
-  .then(() => {
-    // Create multiple new libraries
+    // Create libraries first
     return Library.insertMany([
       {
         name: "Central Library",
@@ -100,10 +64,9 @@ mongoose
     ]);
   })
   .then((libraries) => {
-    console.log("Libraries created:", libraries);
 
     // Create books for the libraries
-    return Book.insertMany([
+    const bookData = [
       {
         title: "To Kill a Mockingbird",
         author: "Harper Lee",
@@ -137,36 +100,94 @@ mongoose
         library: libraries[1]._id, // Second library
         summary: "A story about the young and mysterious millionaire Jay Gatsby.",
       },
-    ]);
+    ];
+
+    // Create books and then update the libraries with the created books
+    const bookPromises = bookData.map((book) =>
+      Book.create(book).then((createdBook) => {
+        console.log(`Book created: ${createdBook.title}`);
+
+        // Update the library with the new book
+        return Library.findByIdAndUpdate(
+          createdBook.library, // The library ID from the book
+          { $push: { books: createdBook._id } }, // Add the book ID to the library's books array
+          { new: true } // Return the updated library document
+        ).then((updatedLibrary) => {
+          console.log(`Updated library: ${updatedLibrary.name} with book ${createdBook.title}`);
+        });
+      })
+    );
+
+    return Promise.all(bookPromises).then(() => libraries); // Return libraries for further steps
   })
-  .then((books) => {
-    console.log("Books created:", books);
+  .then((libraries) => {
+    // Now create users
+    const users = [
+      {
+        firstName: "Ema",
+        lastName: "Djedović",
+        email: "ema@gmail.com",
+        password: "pass123",
+        zipCode: 71000,
+      },
+      {
+        firstName: "Kenan",
+        lastName: "Konjić",
+        email: "kenan@gmail.com",
+        password: "pass123",
+        zipCode: 71000,
+      },
+      {
+        firstName: "Alma",
+        lastName: "Bašić",
+        email: "alma@gmail.com",
+        password: "pass123",
+        zipCode: 70230,
+      },
+    ];
 
-    // Assign libraries to members
-    const memberPromises = [
-      Member.findOne({ email: "ema@gmail.com" }).then((member) => {
-        member.libraries.push(libraries[0]._id, libraries[1]._id); // Assign both libraries
-        console.log(`Adding membership: ${member.fullName}`);
-        return member.save();
+    const userPromises = users.map((userData) => {
+      const testUser = new User(userData);
+      return User.register(testUser, userData.password).then((user) => {
+        console.log(`User registered: ${user.fullName}`);
+        return user; // Return user for further processing
+      });
+    });
+
+    return Promise.all(userPromises).then((registeredUsers) => {
+      return { registeredUsers, libraries };
+    });
+  })
+  .then(({ registeredUsers, libraries }) => {
+    // Assign libraries to users
+    const userPromises = [
+      User.findOne({ email: "ema@gmail.com" }).then((user) => {
+        if (user) {
+          user.libraries.push(libraries[0]._id, libraries[1]._id); // Assign both libraries
+          console.log(`Adding membership: ${user.fullName}`);
+          return user.save();
+        }
       }),
-
-      Member.findOne({ email: "kenan@gmail.com" }).then((member) => {
-        member.libraries.push(libraries[0]._id); // Assign the first library
-        console.log(`Adding membership: ${member.fullName}`);
-        return member.save();
+      User.findOne({ email: "kenan@gmail.com" }).then((user) => {
+        if (user) {
+          user.libraries.push(libraries[0]._id); // Assign the first library
+          console.log(`Adding membership: ${user.fullName}`);
+          return user.save();
+        }
       }),
-
-      Member.findOne({ email: "alma@gmail.com" }).then((member) => {
-        member.libraries.push(libraries[1]._id); // Assign the second library
-        console.log(`Adding membership: ${member.fullName}`);
-        return member.save();
+      User.findOne({ email: "alma@gmail.com" }).then((user) => {
+        if (user) {
+          user.libraries.push(libraries[1]._id); // Assign the second library
+          console.log(`Adding membership: ${user.fullName}`);
+          return user.save();
+        }
       }),
     ];
 
-    return Promise.all([...memberPromises]);
+    return Promise.all(userPromises);
   })
   .then(() => {
-    console.log("Libraries assigned to members.");
+    console.log("Libraries assigned to users.");
   })
   .catch((err) => {
     console.error("Error:", err);

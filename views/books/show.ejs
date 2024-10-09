@@ -1,4 +1,4 @@
-<h1>Book Details for <%= book.title %></h1>
+<h3>BOOK DETAILS: <%= book.title %></h3>
 <table class="table">
   <tr>
     <th>Title</th>
@@ -40,16 +40,16 @@
 
 <div class="container mt-3">
   <div>
-    <a href="/books" class="btn btn-dark mt-1">View All Books</a>
+    <a href="/books" class="btn btn-outline-dark mt-1">View All Books</a>
   </div>
   <div>
-    <a href="<%= `/books/${book._id}/edit` %>" class="btn btn-dark mt-1">Edit Book Details</a>
+    <a href="<%= `/books/${book._id}/edit` %>" class="btn btn-outline-dark mt-1">Edit Book Details</a>
   </div>
   <div>
     <a
       href="<%= `/books/${book._id}/delete?_method=DELETE` %>"
       onclick="return confirm('Are you sure you want to delete this book?')"
-      class="btn btn-dark mt-1"
+      class="btn btn-outline-dark mt-1"
     >Delete</a>
   </div>
 </div>

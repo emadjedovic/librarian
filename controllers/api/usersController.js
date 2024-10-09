@@ -1,10 +1,10 @@
-const Member = require("../../models/member");
+const User = require("../../models/user");
 const StatusCodes = require("http-status-codes").StatusCodes;
 const jsonWebToken = require("jsonwebtoken");
 const passport = require("passport");
 
-// Function to extract member parameters from the request body
-const getMemberParams = (body) => {
+// Function to extract user parameters from the request body
+const getUserParams = (body) => {
   return {
     firstName: body.firstName,
     lastName: body.lastName,
@@ -13,34 +13,34 @@ const getMemberParams = (body) => {
   };
 };
 
-// Fetch all members
+// Fetch all users
 const index = (req, res, next) => {
-  Member.find()
-    .then((members) => {
-      res.locals.members = members;
+  User.find()
+    .then((users) => {
+      res.locals.users = users;
       next();
     })
     .catch((error) => {
-      console.log(`Error fetching members: ${error.message}`);
+      console.log(`Error fetching users: ${error.message}`);
       next(error);
     });
 };
 
-// Fetch a specific member by ID
-const showMember = (req, res, next) => {
-  let memberId = req.params.id;
-  Member.findById(memberId)
-    .then((member) => {
-      res.locals.member = member;
+// Fetch a specific user by ID
+const showUser = (req, res, next) => {
+  let userId = req.params.id;
+  User.findById(userId)
+    .then((user) => {
+      res.locals.user = user;
       next();
     })
     .catch((error) => {
-      console.log(`Error fetching member by ID: ${error.message}`);
+      console.log(`Error fetching user by ID: ${error.message}`);
       next(error);
     });
 };
 
-// Respond with member data in JSON format
+// Respond with user data in JSON format
 const respondJSON = (req, res) => {
   res.json({
     status: StatusCodes.OK,
@@ -79,15 +79,15 @@ const verifyJWT = (req, res, next) => {
             message: "Invalid or expired token.",
           });
         }
-        // Attach member data to the request for further processing
-        Member.findById(payload.data).then((member) => {
-          if (member) {
-            req.member = member; // Attach member to request object
+        // Attach user data to the request for further processing
+        User.findById(payload.data).then((user) => {
+          if (user) {
+            req.user = user; // Attach user to request object
             next();
           } else {
             res.status(StatusCodes.FORBIDDEN).json({
               error: true,
-              message: "No Member account found.",
+              message: "No User account found.",
             });
           }
         });
@@ -101,10 +101,10 @@ const verifyJWT = (req, res, next) => {
   }
 };
 
-// Create a new member
-const createMember = (req, res, next) => {
-  let newMember = new Member(getMemberParams(req.body));
-  Member.register(newMember, req.body.password, (error, member) => {
+// Create a new user
+const createUser = (req, res, next) => {
+  let newUser = new User(getUserParams(req.body));
+  User.register(newUser, req.body.password, (error, user) => {
     if (error) {
       return next(new Error(error.message));
     }
@@ -112,20 +112,20 @@ const createMember = (req, res, next) => {
     passport.authenticate("local")(req, res, () => {
       res.json({
         success: true,
-        message: "Member created successfully.",
+        message: "User created successfully.",
       });
     });
   });
 };
 
-// Authenticate member and generate JWT
+// Authenticate user and generate JWT
 
 const apiAuthenticate = (req, res, next) => {
-  passport.authenticate("local", (errors, member) => {
-    if (member) {
+  passport.authenticate("local", (errors, user) => {
+    if (user) {
       const signedToken = jsonWebToken.sign(
         {
-          data: member._id,
+          data: user._id,
         },
         "secret_encoding_passphrase",
         { expiresIn: "1d" } // Set expiration to 1 day
@@ -138,7 +138,7 @@ const apiAuthenticate = (req, res, next) => {
     } else {
       res.json({
         success: false,
-        message: "Could not authenticate member.",
+        message: "Could not authenticate user.",
       });
     }
   })(req, res, next);
@@ -146,12 +146,12 @@ const apiAuthenticate = (req, res, next) => {
 
 
 module.exports = {
-  getMemberParams,
+  getUserParams,
   index,
-  showMember,
+  showUser,
   respondJSON,
   errorJSON,
   verifyJWT,
-  createMember,
+  createUser,
   apiAuthenticate,
 };

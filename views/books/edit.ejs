@@ -1,87 +1,133 @@
 <div class="container" style="width: 500px">
     <form action="<%= `/books/${book._id}/update?_method=PUT` %>" class="form text-center" method="POST">
-      <h2>Edit Book: <%= book.title %></h2>
+      <h3 class="mb-4">EDIT BOOK: <%= book.title %></h3>
   
-      <input
-        type="text"
-        name="title"
-        id="inputTitle"
-        value="<%= book.title %>"
-        placeholder="Title"
-        class="form-control m-2"
-        required
-      />
-  
-      <input
-        type="text"
-        name="author"
-        id="inputAuthor"
-        value="<%= book.author %>"
-        placeholder="Author"
-        class="form-control m-2"
-        required
-      />
-  
-      <input
-        type="text"
-        name="ISBN"
-        id="inputISBN"
-        value="<%= book.ISBN %>"
-        placeholder="13-digit ISBN"
-        class="form-control m-2"
-        pattern="\d{13}"
-        required
-      />
-  
-      <select name="genre" id="inputGenre" class="form-control m-2" required>
-        <option value="<%= book.genre %>"><%= book.genre %></option>
-        <option value="Fiction">Fiction</option>
-        <option value="Non-Fiction">Non-Fiction</option>
-        <option value="Mystery">Mystery</option>
-        <option value="Science Fiction">Science Fiction</option>
-        <option value="Fantasy">Fantasy</option>
-        <option value="Biography">Biography</option>
-        <option value="History">History</option>
-        <option value="Children">Children</option>
-        <option value="Other">Other</option>
-      </select>
-  
-      <input
-        type="date"
-        name="publishedDate"
-        id="inputPublishedDate"
-        value="<%= book.publishedDate.toISOString().split('T')[0] %>"
-        class="form-control m-2"
-        required
-      />
-  
-      <input
-        type="number"
-        name="pages"
-        id="inputPages"
-        value="<%= book.pages %>"
-        placeholder="Number of Pages"
-        class="form-control m-2"
-        min="1"
-        required
-      />
-  
-      <input
-        type="number"
-        name="availableCopies"
-        id="inputAvailableCopies"
-        value="<%= book.availableCopies %>"
-        placeholder="Available Copies"
-        class="form-control m-2"
-        min="0"
-      />
-  
-      <select name="library" id="inputLibrary" class="form-control m-2" required>
-        <option value="" disabled>Select Library</option>
-        <% libraries.forEach(library => { %>
-          <option value="<%= library._id %>" <%= library._id.equals(book.library) ? 'selected' : '' %>><%= library.name %></option>
-        <% }) %>
-      </select>
+
+      <!-- Row for Title -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputTitle" class="form-label">Title</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="text"
+          name="title"
+          id="inputTitle"
+          value="<%= book.title %>"
+          placeholder="Title"
+          class="form-control"
+        />
+      </div>
+    </div>
+
+    <!-- Row for Author -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputAuthor" class="form-label">Author</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="text"
+          name="author"
+          id="inputAuthor"
+          value="<%= book.author %>"
+          placeholder="Author"
+          class="form-control"
+        />
+      </div>
+    </div>
+
+    <!-- Row for ISBN -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputISBN" class="form-label">ISBN</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="text"
+          name="ISBN"
+          id="inputISBN"
+          value="<%= book.ISBN %>"
+          placeholder="13-digit ISBN"
+          class="form-control"
+          pattern="\d{13}"
+        />
+      </div>
+    </div>
+
+    <!-- Row for Genre -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputGenre" class="form-label">Genre</label>
+      </div>
+      <div class="col-8">
+        <select name="genre" id="inputGenre" class="form-control" required>
+          <option value="<%= book.genre %>"><%= book.genre %></option>
+          <option value="Fiction">Fiction</option>
+          <option value="Non-Fiction">Non-Fiction</option>
+          <option value="Mystery">Mystery</option>
+          <option value="Science Fiction">Science Fiction</option>
+          <option value="Fantasy">Fantasy</option>
+          <option value="Biography">Biography</option>
+          <option value="History">History</option>
+          <option value="Children">Children</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row for Published Date -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputPublishedDate" class="form-label">Published Date</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="date"
+          name="publishedDate"
+          id="inputPublishedDate"
+          value="<%= book.publishedDate.toISOString().split('T')[0] %>"
+          class="form-control"
+        />
+      </div>
+    </div>
+
+    <!-- Row for Pages -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputPages" class="form-label">Pages</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="number"
+          name="pages"
+          id="inputPages"
+          value="<%= book.pages %>"
+          placeholder="Number of Pages"
+          class="form-control"
+          min="1"
+        />
+      </div>
+    </div>
+
+    <!-- Row for Available Copies -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputAvailableCopies" class="form-label">Available Copies</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="number"
+          name="availableCopies"
+          id="inputAvailableCopies"
+          value="<%= book.availableCopies %>"
+          placeholder="Available Copies"
+          class="form-control"
+          min="0"
+        />
+      </div>
+    </div>
+
   
       <textarea
         name="summary"
@@ -91,7 +137,7 @@
         maxlength="1000"
       ><%= book.summary %></textarea>
   
-      <button type="submit" class="btn btn-dark m-2">UPDATE BOOK</button>
+      <button type="submit" class="btn btn-outline-dark m-2">UPDATE BOOK</button>
     </form>
   </div>
   

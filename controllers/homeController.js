@@ -1,6 +1,6 @@
 const showHome = (req, res) => {
-  const memberName = res.locals.currentMember ? res.locals.currentMember.firstName : 'Guest';
-  res.render('index', { name: memberName });
+  const userName = res.locals.currentUser ? res.locals.currentUser.firstName : 'Guest';
+  res.render('dashboard', { name: userName });
 };
 
 module.exports = {

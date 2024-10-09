@@ -2,82 +2,129 @@
     <form action="/books/create" class="form text-center" method="POST">
       <h2>Add a New Book</h2>
   
-      <input
-        type="text"
-        name="title"
-        id="inputTitle"
-        placeholder="Title"
-        class="form-control m-2"
-        required
-      />
+      <!-- Row for Title -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputTitle" class="form-label">Title</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="text"
+          name="title"
+          id="inputTitle"
+          placeholder="Title"
+          class="form-control"
+          required
+        />
+      </div>
+    </div>
+
+    <!-- Row for Author -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputAuthor" class="form-label">Author</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="text"
+          name="author"
+          id="inputAuthor"
+          placeholder="Author"
+          class="form-control"
+          required
+        />
+      </div>
+    </div>
+
+    <!-- Row for ISBN -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputISBN" class="form-label">ISBN</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="text"
+          name="ISBN"
+          id="inputISBN"
+          placeholder="13-digit ISBN"
+          class="form-control"
+          pattern="\d{13}"
+        />
+      </div>
+    </div>
+
+    <!-- Row for Genre -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputGenre" class="form-label">Genre</label>
+      </div>
+      <div class="col-8">
+        <select name="genre" id="inputGenre" class="form-control" required>
+          <option value="Fiction">Fiction</option>
+          <option value="Non-Fiction">Non-Fiction</option>
+          <option value="Mystery">Mystery</option>
+          <option value="Science Fiction">Science Fiction</option>
+          <option value="Fantasy">Fantasy</option>
+          <option value="Biography">Biography</option>
+          <option value="History">History</option>
+          <option value="Children">Children</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row for Published Date -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputPublishedDate" class="form-label">Published Date</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="date"
+          name="publishedDate"
+          id="inputPublishedDate"
+          class="form-control"
+        />
+      </div>
+    </div>
+
+    <!-- Row for Pages -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputPages" class="form-label">Pages</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="number"
+          name="pages"
+          id="inputPages"
+          placeholder="Number of Pages"
+          class="form-control"
+          min="1"
+        />
+      </div>
+    </div>
+
+    <!-- Row for Available Copies -->
+    <div class="row m-3">
+      <div class="col-4">
+        <label for="inputAvailableCopies" class="form-label">Available Copies</label>
+      </div>
+      <div class="col-8">
+        <input
+          type="number"
+          name="availableCopies"
+          id="inputAvailableCopies"
+          placeholder="Available Copies"
+          class="form-control"
+          min="0"
+        />
+      </div>
+    </div>
   
-      <input
-        type="text"
-        name="author"
-        id="inputAuthor"
-        placeholder="Author"
-        class="form-control m-2"
-        required
-      />
-  
-      <input
-        type="text"
-        name="ISBN"
-        id="inputISBN"
-        placeholder="13-digit ISBN"
-        class="form-control m-2"
-        pattern="\d{13}"
-        required
-      />
-  
-      <select name="genre" id="inputGenre" class="form-control m-2" required>
-        <option value="" disabled selected>Select Genre</option>
-        <option value="Fiction">Fiction</option>
-        <option value="Non-Fiction">Non-Fiction</option>
-        <option value="Mystery">Mystery</option>
-        <option value="Science Fiction">Science Fiction</option>
-        <option value="Fantasy">Fantasy</option>
-        <option value="Biography">Biography</option>
-        <option value="History">History</option>
-        <option value="Children">Children</option>
-        <option value="Other">Other</option>
-      </select>
-  
-      <input
-        type="date"
-        name="publishedDate"
-        id="inputPublishedDate"
-        placeholder="Published Date"
-        class="form-control m-2"
-        required
-      />
-  
-      <input
-        type="number"
-        name="pages"
-        id="inputPages"
-        placeholder="Number of Pages"
-        class="form-control m-2"
-        min="1"
-        required
-      />
-  
-      <input
-        type="number"
-        name="availableCopies"
-        id="inputAvailableCopies"
-        placeholder="Available Copies"
-        class="form-control m-2"
-        min="0"
-        value="1"
-      />
-  
-      <select name="library" id="inputLibrary" class="form-control m-2" required>
-        <option value="" disabled selected>Select Library</option>
-        <% libraries.forEach(library => { %>
-          <option value="<%= library._id %>"><%= library.name %></option>
-        <% }) %>
-      </select>
+    <select name="library" id="inputLibrary" class="form-control m-2" required>
+      <option value="" disabled>Select Library</option>
+    </select>
   
       <textarea
         name="summary"
@@ -87,7 +134,22 @@
         maxlength="1000"
       ></textarea>
   
-      <button type="submit" class="btn btn-dark m-2">ADD BOOK</button>
+      <button type="submit" class="btn btn-outline-dark m-2">ADD BOOK</button>
     </form>
   </div>
+
+  <script>
+    $(document).ready(function() {
+      // Fetch libraries from the server
+      $.get('/api/libraries', function(libraries) {
+        const librarySelect = $('#inputLibrary');
+        libraries.forEach(library => {
+          const option = $('<option></option>')
+            .attr('value', library._id)
+            .text(library.name);
+          librarySelect.append(option);
+        });
+      });
+    });
+  </script>
   

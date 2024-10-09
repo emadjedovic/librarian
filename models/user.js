@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const passportLocalMongoose = require("passport-local-mongoose");
 
-const memberSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -33,15 +33,15 @@ const memberSchema = new mongoose.Schema(
 
 // automatically takes care of password storage, so no need for the password property
 // instead hash and salt fields
-memberSchema.plugin(passportLocalMongoose, {
-  membernameField: "email",
+userSchema.plugin(passportLocalMongoose, {
+  usernameField: "email",
 });
 
 // we want first name and last name in one line
 // add a virtual attribute
 // (computed attribute - isn't saved in the database)
-memberSchema.virtual("fullName").get(function () {
+userSchema.virtual("fullName").get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
-module.exports = mongoose.model("Member", memberSchema);
+module.exports = mongoose.model("User", userSchema);
