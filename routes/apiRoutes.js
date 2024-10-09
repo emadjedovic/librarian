@@ -1,54 +1,40 @@
 const router = require("express").Router();
-const coursesController = require("../controllers/api/coursesController");
-const usersController = require("../controllers/api/usersController");
-const redirectView = require("../controllers/usersController").redirectView
-const subscribersController = require("../controllers/api/subscribersController");
+const librariesController = require("../controllers/api/librariesController");
+const membersController = require("../controllers/api/membersController");
+const redirectView = require("../controllers/membersController").redirectView
 
 // every route needs to use the verifyJWT middleware except for
 // the login route, which is used to generate JWT
-router.post("/login", usersController.apiAuthenticate, redirectView)
-router.use(usersController.verifyJWT)
+router.post("/login", membersController.apiAuthenticate, redirectView)
+router.use(membersController.verifyJWT)
 
 // COURSES
 router.get(
-  "/courses",
-  coursesController.index,
-  coursesController.filterUserCourses,
-  coursesController.respondJSON
+  "/libraries",
+  librariesController.index,
+  librariesController.filterMemberLibraries,
+  librariesController.respondJSON
 );
 router.get(
-  "/courses/:id",
-  coursesController.showCourse,
-  coursesController.respondJSON
+  "/libraries/:id",
+  librariesController.showLibrary,
+  librariesController.respondJSON
 );
 router.get(
-  "/courses/:id/join",
-  coursesController.joinCourse,
-  coursesController.respondJSON
+  "/libraries/:id/join",
+  librariesController.joinLibrary,
+  librariesController.respondJSON
 );
 
 // USERS
-router.get("/users", usersController.index, usersController.respondJSON);
+router.get("/members", membersController.index, membersController.respondJSON);
 router.post(
-    "/users/create",
-    usersController.createUser,
-    usersController.respondJSON
+    "/members/create",
+    membersController.createMember,
+    membersController.respondJSON
   );
-router.get("/users/:id", usersController.showUser, usersController.respondJSON);
+router.get("/members/:id", membersController.showMember, membersController.respondJSON);
 
-
-// SUBSCRIBERS
-router.get(
-  "/subscribers",
-  subscribersController.index,
-  subscribersController.respondJSON
-);
-router.get(
-  "/subscribers/:id",
-  subscribersController.showSubscriber,
-  subscribersController.respondJSON
-);
-
-router.use(coursesController.errorJSON);
+router.use(librariesController.errorJSON);
 
 module.exports = router;

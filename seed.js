@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
-const Subscriber = require("./models/subscriber");
-const Course = require("./models/course");
-const User = require("./models/user"); // Include the User model
+const Library = require("./models/library");
+const Member = require("./models/member");
 const passport = require("passport");
 
-const dbURL = "mongodb://localhost:27017/capricciosity";
+const dbURL = "mongodb://localhost:27017/librarian";
 
 mongoose
   .connect(dbURL)
@@ -13,29 +12,14 @@ mongoose
 
     // Clear existing collections
     return Promise.all([
-      Subscriber.deleteMany(),
-      Course.deleteMany(),
-      User.deleteMany(),
+      Library.deleteMany(),
+      Member.deleteMany(),
     ]);
   })
   .then(() => {
     console.log("Database cleared!");
 
-    // Define subscribers
-    const subscribers = [
-      { name: "Ema Djedović", email: "ema@gmail.com", zipCode: 71000 },
-      { name: "Kenan Konjić", email: "kenan@gmail.com", zipCode: 71000 },
-      { name: "Alma Bašić", email: "alma@gmail.com", zipCode: 70230 },
-    ];
-
-    // Insert new subscribers
-    return Subscriber.insertMany(subscribers);
-  })
-  .then((subscribers) => {
-    console.log("Subscribers added:", subscribers);
-
-    // Now create and link users to subscribers
-    const users = [
+    const members = [
       {
         name: { first: "Ema", last: "Djedović" },
         email: "ema@gmail.com",
@@ -56,43 +40,24 @@ mongoose
       },
     ];
 
-    // Insert users and link to subscribers
-    const userPromises = users.map((userData) => {
-      const testUser = new User(userData);
+    const memberPromises = members.map((memberData) => {
+      const testMember = new Member(memberData);
 
       // Using passport's register method to handle hashing and saving
-      return User.register(testUser, userData.password).then((user) => {
-        console.log(`User registered: ${user.fullName}`);
+      return Member.register(testMember, memberData.password).then((member) => {
+        console.log(`Member registered: ${member.fullName}`);
 
-        // Find corresponding subscriber by email
-        return Subscriber.findOne({ email: user.email })
-          .then((subscriber) => {
-            if (!subscriber) {
-              throw new Error(`Subscriber not found for email: ${user.email}`);
-            }
-
-            // Link subscriber to user
-            user.subscribedAccount = subscriber._id;
-
-            // Save updated user with subscriber reference
-            return user.save();
-          })
-          .then((updatedUser) => {
-            console.log(
-              `User updated and linked to subscriber: ${updatedUser.fullName}`
-            );
-            return updatedUser;
-          });
+        
+          
       });
     });
 
-    return Promise.all(userPromises);
+    return Promise.all(memberPromises);
   })
-  .then((users) => {
-    console.log("All users created and linked to subscribers:", users);
+  .then((members) => {
 
-    // Create multiple new courses
-    return Course.insertMany([
+    // Create multiple new libraries
+    return Library.insertMany([
       {
         title: "Tomato Land",
         description: "Locally farmed tomatoes only",
@@ -114,44 +79,32 @@ mongoose
     ]);
     
   })
-  .then((courses) => {
-    console.log("Courses created:", courses);
+  .then((libraries) => {
+    console.log("Libraries created:", libraries);
 
-    // Find and assign courses to subscribers and users
-    const subscriberPromises = [
-      Subscriber.findOne({ email: "ema@gmail.com" }).then((subscriber) => {
-        subscriber.courses.push(courses[0]._id, courses[1]._id);
-        return subscriber.save();
+
+    const memberPromises = [
+      Member.findOne({ email: "ema@gmail.com" }).then((member) => {
+        member.libraries.push(libraries[0]._id, libraries[1]._id);
+        console.log(`Assigning libraries to member: ${member.fullName}`);
+        return member.save();
       }),
 
-      Subscriber.findOne({ email: "kenan@gmail.com" }).then((subscriber) => {
-        subscriber.courses.push(courses[2]._id);
-        return subscriber.save();
-      }),
-    ];
-
-    const userPromises = [
-      User.findOne({ email: "ema@gmail.com" }).then((user) => {
-        user.courses.push(courses[0]._id, courses[1]._id);
-        console.log(`Assigning courses to user: ${user.fullName}`);
-        return user.save();
-      }),
-
-      User.findOne({ email: "kenan@gmail.com" }).then((user) => {
-        user.courses.push(courses[2]._id);
-        console.log(`Assigning courses to user: ${user.fullName}`);
-        return user.save();
+      Member.findOne({ email: "kenan@gmail.com" }).then((member) => {
+        member.libraries.push(libraries[2]._id);
+        console.log(`Assigning libraries to member: ${member.fullName}`);
+        return member.save();
       }),
     ];
 
-    return Promise.all([...subscriberPromises, ...userPromises]);
+    return Promise.all([...memberPromises]);
   })
   .then(() => {
-    console.log("Courses assigned to both subscribers and users.");
+    console.log("Libraries assigned to members.");
   })
   .catch((err) => {
     console.error("Error:", err);
   })
   .finally(() => {
-    mongoose.connection.close(); // Ensure connection closes
+    mongoose.connection.close();
   });

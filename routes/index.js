@@ -1,16 +1,14 @@
 const router = require("express").Router()
 
-const courseRoutes = require("./courseRoutes")
+const libraryRoutes = require("./libraryRoutes")
 const errorRoutes = require("./errorRoutes")
 const homeRoutes = require("./homeRoutes")
-const subscriberRoutes = require("./subscriberRoutes")
-const userRoutes = require("./userRoutes")
+const memberRoutes = require("./memberRoutes")
 const apiRoutes = require("./apiRoutes")
 
 // order matters
-router.use("/users", userRoutes);
-router.use("/subscribers", subscriberRoutes);
-router.use("/courses", courseRoutes);
+router.use("/members", memberRoutes);
+router.use("/libraries", libraryRoutes);
 router.use("/api", apiRoutes)
 router.use("/", homeRoutes);
 router.use("/", errorRoutes);

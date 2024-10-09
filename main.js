@@ -2,7 +2,7 @@ const express = require("express");
 const layouts = require("express-ejs-layouts");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
-const User = require("./models/user");
+const Member = require("./models/member");
 const expressSession = require("express-session");
 const cookieParser = require("cookie-parser");
 const connectFlash = require("connect-flash");
@@ -12,7 +12,7 @@ const app = express();
 
 // DATABASE
 
-const dbURL = "mongodb://localhost:27017/capricciosity";
+const dbURL = "mongodb://localhost:27017/librarian";
 
 mongoose
   .connect(dbURL)
@@ -47,14 +47,14 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use(Member.createStrategy());
+passport.serializeUser(Member.serializeUser());
+passport.deserializeUser(Member.deserializeUser());
 app.use(connectFlash());
 app.use((req, res, next) => {
   res.locals.flashMessages = req.flash();
   res.locals.loggedIn = req.isAuthenticated();
-  res.locals.currentUser = req.user;
+  res.locals.currentMember = req.member;
   res.locals.token = req.session.token;
   next();
 

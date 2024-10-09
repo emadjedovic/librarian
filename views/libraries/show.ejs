@@ -1,0 +1,39 @@
+<h1>Library Data for <%= library.title %></h1>
+<table class="table">
+  <tr>
+    <th>Title</th>
+    <td><%= library.title %></td>
+  </tr>
+  <tr>
+    <th>Description</th>
+    <td><%= library.description %></td>
+  </tr>
+  <tr>
+    <th>Max Students</th>
+    <td><%= library.maxStudents %></td>
+  </tr>
+  <tr>
+    <th>Cost</th>
+    <td><%= library.cost %></td>
+  </tr>
+</table>
+
+<% // if (library.items) { %>
+<% /*library.items.forEach((item) => { %> <%= item %> | <% }) %> <% } */%>
+
+<div class="container mt-3">
+  <div>
+    <a href="/libraries" class="btn btn-dark mt-1">View all libraries</a>
+  </div>
+  <div>
+    <a href="<%=`/libraries/${library._id}/edit`%>" class="btn btn-dark mt-1"> Edit Library Details </a>
+  </div>
+  <div>
+    <a
+      href="<%= `/libraries/${library._id}/delete?_method=DELETE` %>"
+      onclick="return confirm('Are you sure you want to delete this library?')"
+      class="btn btn-dark mt-1"
+      >Delete</a
+    >
+  </div>
+</div>

@@ -1,12 +1,12 @@
 <div class="container" style="width: 400px">
-    <form method="POST" class="form text-center" action="<%=`/courses/${course._id}/update?_method=PUT`%>">
-      <h2>Edit course:</h2>
+    <form method="POST" class="form text-center" action="<%=`/libraries/${library._id}/update?_method=PUT`%>">
+      <h2>Edit library:</h2>
       <input
         type="text"
         class="form-control m-2"
         name="title"
         id="inputTitle"
-        value="<%=course.title %>"
+        value="<%=library.title %>"
         placeholder="Title"
         required
       />
@@ -15,7 +15,7 @@
         class="form-control m-2"
         name="description"
         id="inputDescription"
-        value="<%=course.description %>"
+        value="<%=library.description %>"
         placeholder="Description"
         required
       />
@@ -25,7 +25,7 @@
         class="form-control m-2"
         name="maxStudents"
         id="inputMaxStudents"
-        value="<%= course.maxStudents %>"
+        value="<%= library.maxStudents %>"
       />
       <label for="inputCost" class="form-label">Cost</label>
       <input
@@ -33,7 +33,7 @@
         class="form-control m-2"
         name="cost"
         id="inputCost"
-        value="<%= course.cost %>"
+        value="<%= library.cost %>"
       />
       <button type="submit" class="btn btn-dark m-2">UPDATE</button>
     </form>

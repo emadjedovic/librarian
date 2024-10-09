@@ -1,8 +1,8 @@
-const User = require("../models/user");
+const Member = require("../models/member");
 const passport = require("passport");
 const jsonWebToken = require("jsonwebtoken");
 
-const getUserParams = (body) => {
+const getMemberParams = (body) => {
   return {
     name: {
       first: body.first,
@@ -13,44 +13,44 @@ const getUserParams = (body) => {
   };
 };
 
-// store the user data on the response and call the next middleware function
+// store the member data on the response and call the next middleware function
 const index = (req, res, next) => {
-  User.find()
-    .then((users) => {
-      res.locals.users = users;
+  Member.find()
+    .then((members) => {
+      res.locals.members = members;
       next();
     })
     .catch((error) => {
-      console.log(`Error fetching users: ${error.message}`);
+      console.log(`Error fetching members: ${error.message}`);
       next(error);
     });
 };
 
 const indexView = (req, res) => {
-    res.render("users/index");
+    res.render("members/index");
 };
 
 // the new action
-const newUser = (req, res) => {
-  res.render("users/new");
+const newMember = (req, res) => {
+  res.render("members/new");
 };
 
 // the create action
 
-const createUser = (req, res, next) => {
+const createMember = (req, res, next) => {
   if (req.skip) next();
-  let newUser = new User(getUserParams(req.body));
-  User.register(newUser, req.body.password, (error, user) => {
-    if (user) {
-      req.flash("success", `${user.fullName}'s account created successfully!`);
-      res.locals.redirect = "/users";
+  let newMember = new Member(getMemberParams(req.body));
+  Member.register(newMember, req.body.password, (error, member) => {
+    if (member) {
+      req.flash("success", `${member.fullName}'s account created successfully!`);
+      res.locals.redirect = "/members";
       next();
     } else {
       req.flash(
         "error",
-        `Failed to create user account because: ${error.message}.`
+        `Failed to create member account because: ${error.message}.`
       );
-      res.locals.redirect = "/users/new";
+      res.locals.redirect = "/members/new";
       next();
     }
   });
@@ -62,101 +62,101 @@ const redirectView = (req, res, next) => {
   else next();
 };
 
-const showUser = (req, res, next) => {
-  let userId = req.params.id;
-  User.findById(userId)
-    .then((user) => {
-      res.locals.user = user;
+const showMember = (req, res, next) => {
+  let memberId = req.params.id;
+  Member.findById(memberId)
+    .then((member) => {
+      res.locals.member = member;
       next();
     })
     .catch((error) => {
-      console.log(`Error fetching user by ID: ${error.message}`);
+      console.log(`Error fetching member by ID: ${error.message}`);
       next(error);
     });
 };
 
 
 const showView = (req, res) => {
-    res.render("users/show");
+    res.render("members/show");
 };
 
 const showEdit = (req, res, next) => {
-  let userId = req.params.id;
-  User.findById(userId)
-    .then((user) => {
-      res.render("users/edit", {
-        user,
+  let memberId = req.params.id;
+  Member.findById(memberId)
+    .then((member) => {
+      res.render("members/edit", {
+        member,
       });
     })
     .catch((error) => {
-      console.log(`Error fetching user by ID: ${error.message}`);
+      console.log(`Error fetching member by ID: ${error.message}`);
       next(error);
     });
 };
-const updateUser = (req, res, next) => {
-  let userId = req.params.id;
-  const userParams = getUserParams(req.body);
-  User.findByIdAndUpdate(userId, {
-    $set: userParams,
+const updateMember = (req, res, next) => {
+  let memberId = req.params.id;
+  const memberParams = getMemberParams(req.body);
+  Member.findByIdAndUpdate(memberId, {
+    $set: memberParams,
   })
-    .then((user) => {
-      res.locals.redirect = `/users/${userId}`; // call redirectView afterwards
-      res.locals.user = user;
+    .then((member) => {
+      res.locals.redirect = `/members/${memberId}`; // call redirectView afterwards
+      res.locals.member = member;
       // success flash message
-      req.flash("success", `${user.fullName} updated successfully!`);
+      req.flash("success", `${member.fullName} updated successfully!`);
       next();
     })
     .catch((error) => {
-      console.log(`Error updating user by ID: ${error.message}`);
-      req.flash("error", `Failed to update user because: ${error.message}.`);
+      console.log(`Error updating member by ID: ${error.message}`);
+      req.flash("error", `Failed to update member because: ${error.message}.`);
       next(error);
     });
 };
 
-const deleteUser = (req, res, next) => {
-  let userId = req.params.id;
-  User.findByIdAndDelete(userId)
+const deleteMember = (req, res, next) => {
+  let memberId = req.params.id;
+  Member.findByIdAndDelete(memberId)
     .then(() => {
-      res.locals.redirect = "/users";
+      res.locals.redirect = "/members";
       // success flash message
-      req.flash("success", `User deleted successfully!`);
+      req.flash("success", `Member deleted successfully!`);
       next();
     })
     .catch((error) => {
-      console.log(`Error deleting user by ID: ${error.message}`);
-      req.flash("error", `Failed to delete user because: ${error.message}.`);
+      console.log(`Error deleting member by ID: ${error.message}`);
+      req.flash("error", `Failed to delete member because: ${error.message}.`);
       next();
     });
 };
 
 const login = (req, res) => {
-  res.render("users/login");
+  res.render("members/login");
 };
 
 // authenticate using local strategy
 const authenticate = (req, res, next) => {
-  passport.authenticate("local", (error, user, info) => {
+  passport.authenticate("local", (error, member, info) => {
     if (error) {
       req.flash("error", "Authentication error.");
-      return res.redirect("/users/login");
+      return res.redirect("/members/login");
     }
     
-    if (!user) {
+    if (!member) {
       req.flash("error", "Failed to login.");
-      return res.redirect("/users/login");
+      return res.redirect("/members/login");
     }
 
     // Successfully authenticated
-    req.login(user, (loginError) => {
+    req.login(member, (loginError) => {
       if (loginError) {
         req.flash("error", "Login failed.");
-        return res.redirect("/users/login");
+        return res.redirect("/members/login");
       }
 
       // Generate a token
       const signedToken = jsonWebToken.sign(
         {
-          data: user._id,
+          data: member._id,
         },
         "secret_encoding_passphrase",
         { expiresIn: "1d" } // Set expiration to 1 day
@@ -211,7 +211,7 @@ const validate = [
       // Collect all error messages
       let messages = errors.array().map((e) => e.msg);
       req.flash("error", messages.join(" and "));
-      res.locals.redirect = "/users/new"; // Set redirect to the form page
+      res.locals.redirect = "/members/new"; // Set redirect to the form page
       return res.redirect(res.locals.redirect); // Redirect back to the form with error messages
     }
     next(); // Move to the next middleware if validation passed
@@ -219,17 +219,17 @@ const validate = [
 ];
 
 module.exports = {
-  getUserParams,
+  getMemberParams,
   index,
   indexView,
-  newUser,
-  createUser,
+  newMember,
+  createMember,
   redirectView,
-  showUser,
+  showMember,
   showView,
   showEdit,
-  updateUser,
-  deleteUser,
+  updateMember,
+  deleteMember,
   login,
   authenticate,
   validate,
