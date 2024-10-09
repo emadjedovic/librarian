@@ -1,13 +1,11 @@
 // no JavaScript is run until the DOM is loaded and ready
 $(document).ready(() => {
-  // Retrieve the JWT from localStorage (or wherever it's stored after member login)
-  // const token = localStorage.getItem("jwtToken");
   console.log("JWT Token:", token); // Log the JWT token
 
   // Listen to a click event on the modal button
   $("#modal-button").click(() => {
     console.log("Modal button clicked. Fetching libraries...");
-    
+
     // Clear the modal from any previous content.
     $(".modal-body").html("");
 
@@ -30,7 +28,7 @@ $(document).ready(() => {
         console.log("API Response:", data); // Log the API response
         
         // Check that the data object contains library information
-        if (!data || !data.libraries) {
+        if (!data || !data.libraries || data.libraries.length === 0) {
           $(".modal-body").append("<p>No libraries available.</p>");
           return;
         }
@@ -41,10 +39,13 @@ $(document).ready(() => {
             `<div class="card mb-3">
               <div class="card-body">
                 <h5 class="card-title fw-bold">
-                  ${library.title}
+                  ${library.name}
                 </h5>
                 <p class="card-text text-muted">
-                  ${library.description}
+                  <strong>Address:</strong> ${library.address}<br>
+                  <strong>Phone:</strong> ${library.contact.phone || 'N/A'}<br>
+                  <strong>Email:</strong> ${library.contact.email || 'N/A'}<br>
+                  <strong>Website:</strong> <a href="${library.website || '#'}" target="_blank">${library.website ? library.website : 'N/A'}</a>
                 </p>
               </div>
               <button class='${
@@ -63,7 +64,6 @@ $(document).ready(() => {
 
 // Event listener to handle join button clicks
 let addJoinButtonListener = () => {
-  // const token = localStorage.getItem("jwtToken"); // Retrieve the JWT again
   $(".join-button").click((event) => {
     let $button = $(event.target),
       libraryId = $button.data("id");

@@ -3,15 +3,13 @@ const passportLocalMongoose = require("passport-local-mongoose");
 
 const memberSchema = new mongoose.Schema(
   {
-    name: {
-      first: {
-        type: String,
-        trim: true,
-      },
-      last: {
-        type: String,
-        trim: true,
-      },
+    firstName: {
+      type: String,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      trim: true,
     },
     email: {
       type: String,
@@ -43,7 +41,7 @@ memberSchema.plugin(passportLocalMongoose, {
 // add a virtual attribute
 // (computed attribute - isn't saved in the database)
 memberSchema.virtual("fullName").get(function () {
-  return `${this.name.first} ${this.name.last}`;
+  return `${this.firstName} ${this.lastName}`;
 });
 
 module.exports = mongoose.model("Member", memberSchema);

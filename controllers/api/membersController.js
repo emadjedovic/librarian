@@ -6,10 +6,8 @@ const passport = require("passport");
 // Function to extract member parameters from the request body
 const getMemberParams = (body) => {
   return {
-    name: {
-      first: body.name.first,
-      last: body.name.last,
-    },
+    firstName: body.firstName,
+    lastName: body.lastName,
     email: body.email,
     zipCode: parseInt(body.zipCode),
   };

@@ -1,5 +1,5 @@
 const showHome = (req, res) => {
-  const memberName = res.locals.currentMember ? res.locals.currentMember.name.first : 'Guest';
+  const memberName = res.locals.currentMember ? res.locals.currentMember.firstName : 'Guest';
   res.render('index', { name: memberName });
 };
 

@@ -1,0 +1,46 @@
+<h1>Our Books</h1>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>ISBN</th>
+      <th>Genre</th>
+      <th>Published Date</th>
+      <th>Available Copies</th>
+      <th>Library</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% books.forEach(book => { %>
+    <tr>
+      <td><a href="<%= `/books/${book._id}` %>"><%= book.title %></a></td>
+      <td><%= book.author %></td>
+      <td><%= book.ISBN %></td>
+      <td><%= book.genre %></td>
+      <td><%= book.publishedDate.toDateString() %></td>
+      <td><%= book.availableCopies %></td>
+      <td><%= book.library.name %></td>
+      <!-- Edit link -->
+      <td>
+        <a href="<%= `/books/${book._id}/edit` %>">Edit</a>
+      </td>
+      <!-- Delete link -->
+      <td>
+        <a
+          href="<%= `/books/${book._id}/delete?_method=DELETE` %>"
+          onclick="return confirm('Are you sure you want to delete this book?')"
+        >
+          Delete
+        </a>
+      </td>
+    </tr>
+    <% }); %>
+  </tbody>
+</table>
+
+<div class="container mt-3">
+  <a href="/books/new" class="btn btn-dark mt-1">Add New Book</a>
+</div>

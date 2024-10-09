@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const librariesController = require("../controllers/api/librariesController");
 const membersController = require("../controllers/api/membersController");
+const booksController = require("../controllers/api/booksController")
 const redirectView = require("../controllers/membersController").redirectView
 
 // every route needs to use the verifyJWT middleware except for
@@ -8,7 +9,7 @@ const redirectView = require("../controllers/membersController").redirectView
 router.post("/login", membersController.apiAuthenticate, redirectView)
 router.use(membersController.verifyJWT)
 
-// COURSES
+// LIBRARIES
 router.get(
   "/libraries",
   librariesController.index,
@@ -26,7 +27,11 @@ router.get(
   librariesController.respondJSON
 );
 
-// USERS
+// BOOKS
+router.get("/books", booksController.index, booksController.respondJSON)
+router.get("/books/:id", booksController.showBook, booksController.respondJSON)
+
+// MEMBERS
 router.get("/members", membersController.index, membersController.respondJSON);
 router.post(
     "/members/create",

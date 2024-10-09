@@ -4,10 +4,8 @@ const jsonWebToken = require("jsonwebtoken");
 
 const getMemberParams = (body) => {
   return {
-    name: {
-      first: body.first,
-      last: body.last,
-    },
+    firstName: body.firstName,
+    lastName: body.lastName,
     email: body.email,
     zipCode: parseInt(body.zipCode),
   };
@@ -27,7 +25,7 @@ const index = (req, res, next) => {
 };
 
 const indexView = (req, res) => {
-    res.render("members/index");
+  res.render("members/index");
 };
 
 // the new action
@@ -36,7 +34,6 @@ const newMember = (req, res) => {
 };
 
 // the create action
-
 const createMember = (req, res, next) => {
   if (req.skip) next();
   let newMember = new Member(getMemberParams(req.body));
@@ -75,9 +72,8 @@ const showMember = (req, res, next) => {
     });
 };
 
-
 const showView = (req, res) => {
-    res.render("members/show");
+  res.render("members/show");
 };
 
 const showEdit = (req, res, next) => {
@@ -93,6 +89,7 @@ const showEdit = (req, res, next) => {
       next(error);
     });
 };
+
 const updateMember = (req, res, next) => {
   let memberId = req.params.id;
   const memberParams = getMemberParams(req.body);
@@ -140,7 +137,7 @@ const authenticate = (req, res, next) => {
       req.flash("error", "Authentication error.");
       return res.redirect("/members/login");
     }
-    
+
     if (!member) {
       req.flash("error", "Failed to login.");
       return res.redirect("/members/login");
@@ -170,7 +167,6 @@ const authenticate = (req, res, next) => {
   })(req, res, next);
 };
 
-
 const logout = (req, res, next) => {
   req.logout((err) => {
     if (err) {
@@ -198,8 +194,8 @@ const validate = [
     .withMessage("Zip code is required")
     .isInt()
     .withMessage("Zip code must be a number")
-    .isLength({ min: 5, max: 5 })
-    .withMessage("Zip code must be exactly 5 digits"),
+    .isLength({ min: 4, max: 5 })
+    .withMessage("Zip code must be between 4 and 5 digits"),
 
   // Validate the password: cannot be empty
   body("password").notEmpty().withMessage("Password cannot be empty"),
@@ -233,5 +229,5 @@ module.exports = {
   login,
   authenticate,
   validate,
-  logout
+  logout,
 };
