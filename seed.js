@@ -124,26 +124,19 @@ mongoose
     // Now create users
     const users = [
       {
-        firstName: "Ema",
-        lastName: "Djedović",
-        email: "ema@gmail.com",
+        firstName: "Jane",
+        lastName: "Doe",
+        email: "jane@gmail.com",
         password: "pass123",
         zipCode: 71000,
       },
       {
-        firstName: "Kenan",
-        lastName: "Konjić",
-        email: "kenan@gmail.com",
+        firstName: "John",
+        lastName: "Doe",
+        email: "john@gmail.com",
         password: "pass123",
         zipCode: 71000,
-      },
-      {
-        firstName: "Alma",
-        lastName: "Bašić",
-        email: "alma@gmail.com",
-        password: "pass123",
-        zipCode: 70230,
-      },
+      }
     ];
 
     const userPromises = users.map((userData) => {
@@ -161,27 +154,20 @@ mongoose
   .then(({ registeredUsers, libraries }) => {
     // Assign libraries to users
     const userPromises = [
-      User.findOne({ email: "ema@gmail.com" }).then((user) => {
+      User.findOne({ email: "jane@gmail.com" }).then((user) => {
         if (user) {
           user.libraries.push(libraries[0]._id, libraries[1]._id); // Assign both libraries
           console.log(`Adding membership: ${user.fullName}`);
           return user.save();
         }
       }),
-      User.findOne({ email: "kenan@gmail.com" }).then((user) => {
+      User.findOne({ email: "john@gmail.com" }).then((user) => {
         if (user) {
           user.libraries.push(libraries[0]._id); // Assign the first library
           console.log(`Adding membership: ${user.fullName}`);
           return user.save();
         }
-      }),
-      User.findOne({ email: "alma@gmail.com" }).then((user) => {
-        if (user) {
-          user.libraries.push(libraries[1]._id); // Assign the second library
-          console.log(`Adding membership: ${user.fullName}`);
-          return user.save();
-        }
-      }),
+      })
     ];
 
     return Promise.all(userPromises);
